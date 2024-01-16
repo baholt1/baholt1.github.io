@@ -1,5 +1,6 @@
 project:
   type: website
+  output-dir: docs
 
 website:
   title: "Brooklyn Holt"
@@ -9,6 +10,7 @@ website:
         text: Home
       - about.qmd
 
+
 format:
   html:
     theme: cosmo
@@ -17,6 +19,5 @@ format:
 
 editor: visual
 
-site-dir: docs
 
 
