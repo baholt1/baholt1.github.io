@@ -18,5 +18,5 @@ format:
 editor: visual
 
 output-dir: docs
-
+site_dir: doc
 
