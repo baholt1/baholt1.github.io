@@ -1,11 +1,11 @@
 ---
-title: "baholt1"
+title: "Brooklyn Holt"
 ---
 
-This is a Quarto website.
+Blurb about asob
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+-   Detail-oriented
 
-```{r}
-1 + 1
-```
+-   Punctual
+
+-   Rational
