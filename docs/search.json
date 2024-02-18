@@ -1,23 +1,93 @@
 [
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "About this site\n\n1 + 1\n\n[1] 2"
-  },
-  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Brooklyn Holt",
     "section": "",
-    "text": "The University of Alberta School of Business offers a strong Finance program that blends rigorous academics with practical application. We focus on student-directed learning, reflecting real workplace dynamics. We equip our students with enterprise-level financial tools and insights, guided by professors who bring a wealth of experience. The advanced courses in our program focus on the ability to frame real-life problems, use Finance concepts and theory, and solve them using Enterprise-level data science tools.\nWe encourage each other to be inquisitive, embrace challenges, and value continuous learning. Mentorship and teamwork are cornerstones of our curriculum, preparing us for diverse roles in finance.\n\n\n\nI am a detail-oriented person who thrives in situations requiring intense examination. Whether it’s analyzing data sets or refining projects, I am energized by the challenge of leaving no stone unturned. This mindset drives me to research new topics and ensure a thorough understanding of every aspect of the task at hand. In addition to my detail-oriented nature, I believe that time is a precious resource not to be wasted. As a punctual person, I approach deadlines and daily commitments efficiently, respecting not only my time but also that of others. My background in customer service helped me develop a calm and rational approach to problem-solving. I approach challenges logically, weighing facts and considering multiple perspectives. This helps me beyond problem-solving but also in maintaining a level-headed approach to all aspects of life."
+    "text": "As I round off my fourth and final year pursuing a Bachelor of Commerce in Finance at the University of Alberta, I’m eager to share some of the projects I’ve been working on. My focus areas include trading, risk management, and data analytics.\nThis website serves as a portfolio of my recent endeavors, with updates added regularly as I complete new projects. I invite you to explore the work I’ve assembled here. Thank you for taking the time to explore my portfolio!"
   },
   {
     "objectID": "index.html#introduction",
     "href": "index.html#introduction",
     "title": "Brooklyn Holt",
     "section": "",
-    "text": "The University of Alberta School of Business offers a strong Finance program that blends rigorous academics with practical application. We focus on student-directed learning, reflecting real workplace dynamics. We equip our students with enterprise-level financial tools and insights, guided by professors who bring a wealth of experience. The advanced courses in our program focus on the ability to frame real-life problems, use Finance concepts and theory, and solve them using Enterprise-level data science tools.\nWe encourage each other to be inquisitive, embrace challenges, and value continuous learning. Mentorship and teamwork are cornerstones of our curriculum, preparing us for diverse roles in finance.\n\n\n\nI am a detail-oriented person who thrives in situations requiring intense examination. Whether it’s analyzing data sets or refining projects, I am energized by the challenge of leaving no stone unturned. This mindset drives me to research new topics and ensure a thorough understanding of every aspect of the task at hand. In addition to my detail-oriented nature, I believe that time is a precious resource not to be wasted. As a punctual person, I approach deadlines and daily commitments efficiently, respecting not only my time but also that of others. My background in customer service helped me develop a calm and rational approach to problem-solving. I approach challenges logically, weighing facts and considering multiple perspectives. This helps me beyond problem-solving but also in maintaining a level-headed approach to all aspects of life."
+    "text": "As I round off my fourth and final year pursuing a Bachelor of Commerce in Finance at the University of Alberta, I’m eager to share some of the projects I’ve been working on. My focus areas include trading, risk management, and data analytics.\nThis website serves as a portfolio of my recent endeavors, with updates added regularly as I complete new projects. I invite you to explore the work I’ve assembled here. Thank you for taking the time to explore my portfolio!"
+  },
+  {
+    "objectID": "CAD_USD_Forcasting.html",
+    "href": "CAD_USD_Forcasting.html",
+    "title": "Impact of Commodity Prices on CAD/USD",
+    "section": "",
+    "text": "This project aims to discover whether commodity prices can be used in the short term to predict changes in the Canadian Dollar. We analyze the correlation between an index of export commodities and the Canadian Dollar to create an optimal trading strategy.\nThis project implements linear models to find a relationship between commodity price movements and its impact on the future CAD/USD exchange rate.\nOur model displays its predictive ability both in the training period and holdout data. Our strategy yields a 3.26% cumulative return in out-of-sample holdout data from August 20, 2021 to present, outperforming a buy and hold strategy by 11.5%. Our strategy finds success in minimizing drawdown periods thereby offering an attractive strategy to manage foreign exchange risk.\n\n\n\n\n\nCurrencies of nations that are heavily influenced by certain commodity prices.\nNet exporters of commodities.\n\nExamples: Brazilian real, Canadian dollar, Mexican Peso, New Zealand dollar, Norwegian krone, Peruvian sol, Russian ruble, and the South African rand.\n\nAlthough this specific project is based on the CAD/USD currency rate, the same principle could apply to other commodity currencies.\n\n\n\n\n\nFactors determining CAD/USD exchange rate (Source_1)\n\nSupply/Demand\nInflation\nInterest rates\nEconomic Performance\nPublic debt\nCurrent Account Deficits\n\nClosely intertwined economies across all markets provide multiple strategies when trading.\n\n\n\nTrading CAD/USD\n\nUS is the largest producer of Oil in the world\nHowever, it is still a net importer of petroleum products.\nMost of it from Canada (~40%) Domestic crude production in the US is increasing, and reliance on imports is reducing quickly.\nThe rapid increase of crude oil exports from the United States should be considered, as it increases throughout our training period.\nBottom line: Canada is still much more concentrated in the petroleum sector.\n\n\n\n\n\n\n\n\n\n\n\n\nThe Bank of Canada Commodity Index (BCPI) is a Fisher Price index of the spot prices in the U.S. dollars of 26 commodities produced in Canada and sold in world markets. (Bank of Canada)\nThe currency and Bank of Canada Commodity index consists of data from October 2003.\nCommodities that make up the index:\n\n\n\n\n\n\n\n\n\n\nEnergy\nMetals and Minerals\nAgriculture\nForestry\nFisheries\n\n\n\n\nCoal\nGold *\nPotatoes\nPulp\nFinfish\n\n\nWest Texas Intermediate (WTI) *\nSilver *\nLive Cattle *\nLumber\nShellfish\n\n\nWestern Canadian Select\nNickel\nLive Hogs *\nNewsprint\n\n\n\nBrent **\nCopper *\nWheat *\n\n\n\n\nNatural Gas\nAluminium\nBarley\n\n\n\n\n\nZinc\nCanola\n\n\n\n\n\nPotash\nCanola\n\n\n\n\n\nLead\nCorn *\n\n\n\n\n\nIron\n\n\n\n\n\n\nNote:\n\n* Commodities included in our index. Index chosen based on data availability.\n** Omitted due to similarity with another commodity\n\n\n\n\n\nThe commodity index moves similarly to the CAD/USD exchange rate\nThe commodities within the index have a direct correlation to the Canadian economy\n\nJob creation and stimulation\nTax revenue from corporations tariffs\nHigher government royalties leads to less municipal, provincial, and federal debt\n\nAlberta recently recorded an $11.6B surplus largely due to high crude prices.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nOur strategy looks at the short term performance of our commodity index\nIf Commodity Index returns are positive in last n days, a long position is assumed\nPosition is held for m days and reassessed thereafter\n\n\n\n\nWhen the currency is highly correlated to commodity price movements\nWhen the economy is heavily reliant on commodity exports\nOur model protects traders from long drawdowns\n\n\n\n\n\nDuring rapid market movements\nAs trading frequency increases, returns decrease\nRapid changes to commodity export proportion (index weights are fixed in this analysis)\nFactors not taken into consideration.\n\nWars, financial crisis, inflation, natural disasters\nNon-commodity to the economy\nForeign policy changes (tariffs, taxes, trade conflicts)\nTransactions costs, Short selling costs"
+  },
+  {
+    "objectID": "CAD_USD_Forcasting.html#research-rationale",
+    "href": "CAD_USD_Forcasting.html#research-rationale",
+    "title": "Impact of Commodity Prices on CAD/USD",
+    "section": "",
+    "text": "Currencies of nations that are heavily influenced by certain commodity prices.\nNet exporters of commodities.\n\nExamples: Brazilian real, Canadian dollar, Mexican Peso, New Zealand dollar, Norwegian krone, Peruvian sol, Russian ruble, and the South African rand.\n\nAlthough this specific project is based on the CAD/USD currency rate, the same principle could apply to other commodity currencies.\n\n\n\n\n\nFactors determining CAD/USD exchange rate (Source_1)\n\nSupply/Demand\nInflation\nInterest rates\nEconomic Performance\nPublic debt\nCurrent Account Deficits\n\nClosely intertwined economies across all markets provide multiple strategies when trading.\n\n\n\nTrading CAD/USD\n\nUS is the largest producer of Oil in the world\nHowever, it is still a net importer of petroleum products.\nMost of it from Canada (~40%) Domestic crude production in the US is increasing, and reliance on imports is reducing quickly.\nThe rapid increase of crude oil exports from the United States should be considered, as it increases throughout our training period.\nBottom line: Canada is still much more concentrated in the petroleum sector.\n\n\n\n\n\n\n\n\n\n\n\n\nThe Bank of Canada Commodity Index (BCPI) is a Fisher Price index of the spot prices in the U.S. dollars of 26 commodities produced in Canada and sold in world markets. (Bank of Canada)\nThe currency and Bank of Canada Commodity index consists of data from October 2003.\nCommodities that make up the index:\n\n\n\n\n\n\n\n\n\n\nEnergy\nMetals and Minerals\nAgriculture\nForestry\nFisheries\n\n\n\n\nCoal\nGold *\nPotatoes\nPulp\nFinfish\n\n\nWest Texas Intermediate (WTI) *\nSilver *\nLive Cattle *\nLumber\nShellfish\n\n\nWestern Canadian Select\nNickel\nLive Hogs *\nNewsprint\n\n\n\nBrent **\nCopper *\nWheat *\n\n\n\n\nNatural Gas\nAluminium\nBarley\n\n\n\n\n\nZinc\nCanola\n\n\n\n\n\nPotash\nCanola\n\n\n\n\n\nLead\nCorn *\n\n\n\n\n\nIron\n\n\n\n\n\n\nNote:\n\n* Commodities included in our index. Index chosen based on data availability.\n** Omitted due to similarity with another commodity\n\n\n\n\n\nThe commodity index moves similarly to the CAD/USD exchange rate\nThe commodities within the index have a direct correlation to the Canadian economy\n\nJob creation and stimulation\nTax revenue from corporations tariffs\nHigher government royalties leads to less municipal, provincial, and federal debt\n\nAlberta recently recorded an $11.6B surplus largely due to high crude prices."
+  },
+  {
+    "objectID": "CAD_USD_Forcasting.html#description-and-type-of-strategy",
+    "href": "CAD_USD_Forcasting.html#description-and-type-of-strategy",
+    "title": "Impact of Commodity Prices on CAD/USD",
+    "section": "",
+    "text": "Our strategy looks at the short term performance of our commodity index\nIf Commodity Index returns are positive in last n days, a long position is assumed\nPosition is held for m days and reassessed thereafter\n\n\n\n\nWhen the currency is highly correlated to commodity price movements\nWhen the economy is heavily reliant on commodity exports\nOur model protects traders from long drawdowns\n\n\n\n\n\nDuring rapid market movements\nAs trading frequency increases, returns decrease\nRapid changes to commodity export proportion (index weights are fixed in this analysis)\nFactors not taken into consideration.\n\nWars, financial crisis, inflation, natural disasters\nNon-commodity to the economy\nForeign policy changes (tariffs, taxes, trade conflicts)\nTransactions costs, Short selling costs"
+  },
+  {
+    "objectID": "CAD_USD_Forcasting.html#data-sources",
+    "href": "CAD_USD_Forcasting.html#data-sources",
+    "title": "Impact of Commodity Prices on CAD/USD",
+    "section": "Data Sources",
+    "text": "Data Sources\n\nYahoo Finance\nCOMEX *\nNew York Mercantile Exchange (NYMEX) *\nChicago Mercantile Exchange (CME) *\nChicago Board of Trade (CBOT) *\nMinneapolis Grain Exchange (MGEX) *\nIntercontinental Exchange (ICE) Canada *\nBank of Canada\n\n* Via MorningStar\n\nIndex Weighting\n\nWeighting was assigned to match the 2013 export percentage. (2013 Export Percentages)\n\nI.e. 17.7% of Canadian exports in 2013 were WTI, compared to the exports of other commodities in our index, WTI is weighted at 66.8%\n\n\n\n\n\nCommodity\nWeight\n\n\n\n\nWest Texas Intermediate (CL)\n66.80%\n\n\nGold (GC)\n13.70%\n\n\nNatural Gas (NG)\n8.72%\n\n\nWheat (MWE)\n6.00%\n\n\nSilver (SI)\n1.85%\n\n\nLive Cattle (LE)\n1.09%\n\n\nCopper (HG)\n1.06%\n\n\nCorn (ZC)\n0.49%\n\n\nLive Hogs (HE)\n0.29%\n\n\n\n\nCorrelation Matrix of Commodity Index and CAD\n\nNote lowercase cad represents week ahead returns for CAD/USD"
+  },
+  {
+    "objectID": "CAD_USD_Forcasting.html#indicators",
+    "href": "CAD_USD_Forcasting.html#indicators",
+    "title": "Impact of Commodity Prices on CAD/USD",
+    "section": "Indicators",
+    "text": "Indicators\n\nCommodity Index return over the last n days\n\nindex_return = sum(ret_index_i + ret_index_(i-1) … +ret_index_(i-n))\n\nHeld and reassessed every m days\n\ncad_return = sum(ret_cad_(i+1) + ret_cad_(i+2) … +ret_cad_(i+m))"
+  },
+  {
+    "objectID": "CAD_USD_Forcasting.html#signals-trades",
+    "href": "CAD_USD_Forcasting.html#signals-trades",
+    "title": "Impact of Commodity Prices on CAD/USD",
+    "section": "Signals & Trades",
+    "text": "Signals & Trades\n\nSignals\n\nIf last n trading days of Commodity Index yield positive results, long\nIf last n trading days of Commodity Index yield negative results, short\nNo signals generated on weekends or during holding period\n\n\n\nTrades\n\nSignals are made at end of day and incorporate end of day data.\nTrades are effective at market open the following trading day\nOnce a trade has been put in, it will not change for the holding period.\n\nThat is, no signals will be generated during the holding period\nTrades will be reassessed after the holding period is over\n\n\n\nBelow is an output of the top 5 highest R^2 values. It is noticeable that the 5 highest R^2 values all have holding periods of 17 trading days or greater.\n\n\n\n\n\n\nBack\nHold\nr_squared\np_value\nestimate\nstd_error\ndf\n\n\n\n\n2\n30\n0.2422\n0.0000\n0.4435\n0.0944\n69\n\n\n3\n30\n0.1466\n0.0010\n0.2777\n0.0807\n69\n\n\n1\n29\n0.1222\n0.0021\n0.4793\n0.1503\n73\n\n\n6\n17\n0.1073\n0.0002\n0.1291\n0.0333\n125\n\n\n4\n17\n0.1043\n0.0002\n0.1426\n0.0374\n125\n\n\n\n\n\n\nReal P-value\n\nThe p-value is the probability of observing a test statistic as extreme or greater than the one computed, assuming that the null hypothesis is true.\nWe can clearly see a relationship between p-values and the number of observations (degrees of freedom).\nReal P-value is the p-value adjusted for the number of observations (degrees of freedom)"
+  },
+  {
+    "objectID": "CAD_USD_Forcasting.html#training-period",
+    "href": "CAD_USD_Forcasting.html#training-period",
+    "title": "Impact of Commodity Prices on CAD/USD",
+    "section": "Training Period",
+    "text": "Training Period\n\n75% of the data was used to create the training set\n\nApril 17, 2014 - August 19, 2021\n\nInputs\n\nn (Back) = 1:10\nm (Hold) = 2:30\n\n\n\nOptimization\nOur model optimizes:\n\nThe look back period\n\nWe receive optimal cumulative returns if we look at the returns 2 previous trading days for our commodity index.\n\nOptimal time to hold\n\nThe optimal time to hold the position is 30 days.\nThis allows time for any major market movements to settle without causing multiple trades in and out of the market.\n\n\nThe model considers the following values when optimizing:\n\nR Squared\nP-Value\nEstimate\n\n\nBuy and Hold Strategy\n\n\nBuy and hold return: -14.22% \n\n\n\n\nTraining Results\n\n\n\nTraining Strategy Statistics\n\n\n\n\n\n\n\n\n\n\n\n\n\nCumReturn\nRet.Ann\nSD.Ann\nSharpe\nOmega\nX..Win\nX..InMrkt\nDD.Length\nDD.Max\n\n\n\n\n0.4629\n0.0514\n0.0759\n0.6773\n0.1269\n0.495\n0.999\n500\n-0.1071\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nRisk Appetite\n\nVery risk-averse\nAutocorrelation Risk: Choosing optimal inputs from R^2 and not Cumulative Returns\nWe seek to lower drawdowns and manage foreign exchange risk rather than increase profits\nStrategy is designed to hedge risk.\n\n\n\n\n\n\nNote: Back is the look-back period, and front is the time held."
+  },
+  {
+    "objectID": "CAD_USD_Forcasting.html#test-period-performance",
+    "href": "CAD_USD_Forcasting.html#test-period-performance",
+    "title": "Impact of Commodity Prices on CAD/USD",
+    "section": "Test Period Performance",
+    "text": "Test Period Performance\n\nTest results were done from August 20, 2021, to Present\n\n\nOptimal Parameters:\n\nLook back: 2 trading days\nHolding period: 30 trading days\nResults from the backtest proved our strategy profitable in the out-of-sample holdout dataset.\nAlthough average annual returns are lower than in the training set, the strategy still outperforms the buy and hold return.\n\n\n\nBuy and hold return: -8.17% \n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTest Strategy Statistics\n\n\n\nTest Strategy Statistics\n\n\n\n\n\n\n\n\n\n\n\n\n\nCumReturn\nRet.Ann\nSD.Ann\nSharpe\nOmega\nX..Win\nX..InMrkt\nDD.Length\nDD.Max\n\n\n\n\n0.0329\n0.0136\n0.0677\n0.2006\n0.0393\n0.5\n0.9967\n276\n-0.1009"
+  },
+  {
+    "objectID": "CAD_USD_Forcasting.html#data-sources-1",
+    "href": "CAD_USD_Forcasting.html#data-sources-1",
+    "title": "Impact of Commodity Prices on CAD/USD",
+    "section": "Data Sources",
+    "text": "Data Sources\n\nYahoo Finance\nCOMEX *\nNew York Mercantile Exchange (NYMEX) *\nChicago Mercantile Exchange (CME) *\nChicago Board of Trade (CBOT) *\nMinneapolis Grain Exchange (MGEX) *\nIntercontinental Exchange (ICE) Canada *\nBank of Canada\n\n* Via MorningStar"
+  },
+  {
+    "objectID": "CAD_USD_Forcasting.html#resources",
+    "href": "CAD_USD_Forcasting.html#resources",
+    "title": "Impact of Commodity Prices on CAD/USD",
+    "section": "Resources",
+    "text": "Resources\nJeannret, A. & Sokolovski, V. 2023. Commodity Prices and Currenies"
+  },
+  {
+    "objectID": "CAD_USD_Forcasting.html#future-considerations",
+    "href": "CAD_USD_Forcasting.html#future-considerations",
+    "title": "Impact of Commodity Prices on CAD/USD",
+    "section": "Future Considerations",
+    "text": "Future Considerations\n\nImplmenting Volatility Trading\n\nGarch model on Commodity Index daily returns"
   }
 ]

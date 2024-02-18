@@ -9,11 +9,12 @@ website:
     left:
       - href: index.qmd
         text: Home
+      - CAD_USD_Forcasting.qmd
 
 
 format:
   html:
-    theme: cosmo
+    theme: sandstone
     css: styles.css
     toc: true
 

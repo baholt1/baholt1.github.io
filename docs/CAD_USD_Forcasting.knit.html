@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.353">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Brooklyn Holt &amp; Olivier Haley">
+
+<title>Brooklyn Holt - Impact of Commodity Prices on CAD/USD</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Brooklyn Holt</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./CAD_USD_Forcasting.html" rel="" target="">
+ <span class="menu-text">Impact of Commodity Prices on CAD/USD</span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools ms-auto">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">Overview</a>
+  <ul class="collapse">
+  <li><a href="#research-rationale" id="toc-research-rationale" class="nav-link" data-scroll-target="#research-rationale">Research &amp; Rationale</a>
+  <ul class="collapse">
+  <li><a href="#commodity-currency" id="toc-commodity-currency" class="nav-link" data-scroll-target="#commodity-currency">Commodity Currency</a></li>
+  <li><a href="#cadusd-exchange-rate" id="toc-cadusd-exchange-rate" class="nav-link" data-scroll-target="#cadusd-exchange-rate">CAD/USD Exchange Rate</a></li>
+  <li><a href="#influence" id="toc-influence" class="nav-link" data-scroll-target="#influence">Influence</a></li>
+  </ul></li>
+  <li><a href="#description-and-type-of-strategy" id="toc-description-and-type-of-strategy" class="nav-link" data-scroll-target="#description-and-type-of-strategy">Description and Type of Strategy</a>
+  <ul class="collapse">
+  <li><a href="#when-does-it-work" id="toc-when-does-it-work" class="nav-link" data-scroll-target="#when-does-it-work">When does it work?</a></li>
+  <li><a href="#when-it-may-not-work" id="toc-when-it-may-not-work" class="nav-link" data-scroll-target="#when-it-may-not-work">When it may not work?</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#model-implementation" id="toc-model-implementation" class="nav-link" data-scroll-target="#model-implementation">Model Implementation</a>
+  <ul class="collapse">
+  <li><a href="#data-sources" id="toc-data-sources" class="nav-link" data-scroll-target="#data-sources">Data Sources</a>
+  <ul class="collapse">
+  <li><a href="#index-weighting" id="toc-index-weighting" class="nav-link" data-scroll-target="#index-weighting">Index Weighting</a></li>
+  </ul></li>
+  <li><a href="#indicators" id="toc-indicators" class="nav-link" data-scroll-target="#indicators">Indicators</a></li>
+  <li><a href="#signals-trades" id="toc-signals-trades" class="nav-link" data-scroll-target="#signals-trades">Signals &amp; Trades</a>
+  <ul class="collapse">
+  <li><a href="#signals" id="toc-signals" class="nav-link" data-scroll-target="#signals">Signals</a></li>
+  <li><a href="#trades" id="toc-trades" class="nav-link" data-scroll-target="#trades">Trades</a></li>
+  </ul></li>
+  <li><a href="#training-period" id="toc-training-period" class="nav-link" data-scroll-target="#training-period">Training Period</a>
+  <ul class="collapse">
+  <li><a href="#optimization" id="toc-optimization" class="nav-link" data-scroll-target="#optimization">Optimization</a></li>
+  <li><a href="#risk-appetite" id="toc-risk-appetite" class="nav-link" data-scroll-target="#risk-appetite">Risk Appetite</a></li>
+  </ul></li>
+  <li><a href="#test-period-performance" id="toc-test-period-performance" class="nav-link" data-scroll-target="#test-period-performance">Test Period Performance</a></li>
+  </ul></li>
+  <li><a href="#learnings" id="toc-learnings" class="nav-link" data-scroll-target="#learnings">Learnings</a>
+  <ul class="collapse">
+  <li><a href="#factors" id="toc-factors" class="nav-link" data-scroll-target="#factors">Factors</a></li>
+  <li><a href="#modeling-strategies" id="toc-modeling-strategies" class="nav-link" data-scroll-target="#modeling-strategies">Modeling Strategies</a></li>
+  <li><a href="#data-sources-1" id="toc-data-sources-1" class="nav-link" data-scroll-target="#data-sources-1">Data Sources</a></li>
+  <li><a href="#resources" id="toc-resources" class="nav-link" data-scroll-target="#resources">Resources</a></li>
+  <li><a href="#future-considerations" id="toc-future-considerations" class="nav-link" data-scroll-target="#future-considerations">Future Considerations</a>
+  <ul class="collapse">
+  <li><a href="#implmenting-volatility-trading" id="toc-implmenting-volatility-trading" class="nav-link" data-scroll-target="#implmenting-volatility-trading">Implmenting Volatility Trading</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Impact of Commodity Prices on CAD/USD</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Brooklyn Holt &amp; Olivier Haley </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="overview" class="level1">
+<h1>Overview</h1>
+<p>This project aims to discover whether commodity prices can be used in the short term to predict changes in the Canadian Dollar. We analyze the correlation between an index of export commodities and the Canadian Dollar to create an optimal trading strategy.</p>
+<p>This project implements linear models to find a relationship between commodity price movements and its impact on the future CAD/USD exchange rate.</p>
+<p>Our model displays its predictive ability both in the training period and holdout data. Our strategy yields a 3.26% cumulative return in out-of-sample holdout data from August 20, 2021 to present, outperforming a buy and hold strategy by 11.5%. Our strategy finds success in minimizing drawdown periods thereby offering an attractive strategy to manage foreign exchange risk.</p>
+<section id="research-rationale" class="level2">
+<h2 class="anchored" data-anchor-id="research-rationale">Research &amp; Rationale</h2>
+<section id="commodity-currency" class="level3">
+<h3 class="anchored" data-anchor-id="commodity-currency">Commodity Currency</h3>
+<ul>
+<li><p>Currencies of nations that are heavily influenced by certain commodity prices.</p></li>
+<li><p>Net exporters of commodities.</p>
+<ul>
+<li>Examples: Brazilian real, Canadian dollar, Mexican Peso, New Zealand dollar, Norwegian krone, Peruvian sol, Russian ruble, and the South African rand.</li>
+</ul></li>
+<li><p>Although this specific project is based on the CAD/USD currency rate, the same principle could apply to other commodity currencies.</p></li>
+</ul>
+</section>
+<section id="cadusd-exchange-rate" class="level3">
+<h3 class="anchored" data-anchor-id="cadusd-exchange-rate">CAD/USD Exchange Rate</h3>
+<ul>
+<li>Factors determining CAD/USD exchange rate (<a href="https://www.investopedia.com/trading/factors-influence-exchange-rates/" title="Factors Influencing Foreign Exchange">Source</a>)
+<ul>
+<li><p>Supply/Demand</p></li>
+<li><p>Inflation</p></li>
+<li><p>Interest rates</p></li>
+<li><p>Economic Performance</p></li>
+<li><p>Public debt</p></li>
+<li><p>Current Account Deficits</p></li>
+</ul></li>
+<li>Closely intertwined economies across all markets provide multiple strategies when trading.</li>
+</ul>
+<!-- -->
+<ul>
+<li><p>Trading CAD/USD</p>
+<ul>
+<li><p>US is the largest producer of Oil in the world</p></li>
+<li><p>However, it is still a net importer of petroleum products.</p></li>
+<li><p>Most of it from Canada (~40%) Domestic crude production in the US is increasing, and reliance on imports is reducing quickly.</p></li>
+<li><p>The rapid increase of crude oil exports from the United States should be considered, as it increases throughout our training period.</p></li>
+<li><p><strong>Bottom line:</strong> Canada is still much more concentrated in the petroleum sector.</p></li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="CAD_USD_Forcasting_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="influence" class="level3">
+<h3 class="anchored" data-anchor-id="influence">Influence</h3>
+<section id="bank-of-canada-commodity-index" class="level4">
+<h4 class="anchored" data-anchor-id="bank-of-canada-commodity-index">Bank of Canada Commodity Index</h4>
+<p>The Bank of Canada Commodity Index (BCPI) is a Fisher Price index of the spot prices in the U.S. dollars of 26 commodities produced in Canada and sold in world markets. (<a href="https://www.bankofcanada.ca/rates/price-indexes/bcpi/" title="Bank of Canada Commodity Price Index">Bank of Canada</a>)</p>
+<p>The currency and Bank of Canada Commodity index consists of data from October 2003.</p>
+<p>Commodities that make up the index:</p>
+<table class="table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Energy</th>
+<th>Metals and Minerals</th>
+<th>Agriculture</th>
+<th>Forestry</th>
+<th>Fisheries</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Coal</td>
+<td>Gold *</td>
+<td>Potatoes</td>
+<td>Pulp</td>
+<td>Finfish</td>
+</tr>
+<tr class="even">
+<td>West Texas Intermediate (WTI) *</td>
+<td>Silver *</td>
+<td>Live Cattle *</td>
+<td>Lumber</td>
+<td>Shellfish</td>
+</tr>
+<tr class="odd">
+<td>Western Canadian Select</td>
+<td>Nickel</td>
+<td>Live Hogs *</td>
+<td>Newsprint</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Brent **</td>
+<td>Copper *</td>
+<td>Wheat *</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Natural Gas</td>
+<td>Aluminium</td>
+<td>Barley</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td></td>
+<td>Zinc</td>
+<td>Canola</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>Potash</td>
+<td>Canola</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td></td>
+<td>Lead</td>
+<td>Corn *</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>Iron</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Note:</p>
+<ul>
+<li>* Commodities included in our index. Index chosen based on data availability.</li>
+<li>** Omitted due to similarity with another commodity</li>
+</ul>
+</section>
+<section id="cadusd-and-bcpi-movement" class="level4">
+<h4 class="anchored" data-anchor-id="cadusd-and-bcpi-movement">CAD/USD and BCPI Movement</h4>
+<ul>
+<li><p>The commodity index moves similarly to the CAD/USD exchange rate</p></li>
+<li><p>The commodities within the index have a direct correlation to the Canadian economy</p>
+<ul>
+<li><p>Job creation and stimulation</p></li>
+<li><p>Tax revenue from corporations tariffs</p></li>
+<li><p>Higher government royalties leads to less municipal, provincial, and federal debt</p>
+<ul>
+<li>Alberta recently recorded an $11.6B surplus largely due to high crude prices.</li>
+</ul></li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="cell-output-display">
+<div class="plotly html-widget html-fill-item" id="htmlwidget-a63a6049b2b823328a34" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-a63a6049b2b823328a34">{"x":{"data":[{"x":[12326,12387,12418,12478,12509,12570,12600,12631,12662,12723,12753,12815,12843,12904,12935,12996,13027,13088,13118,13180,13208,13269,13300,13361,13422,13453,13483,13514,13545,13573,13604,13634,13695,13726,13787,13818,13879,13910,13970,14000,14031,14061,14123,14153,14214,14245,14335,14396,14426,14488,14518,14579,14610,14641,14669,14700,14761,14791,14822,14853,14914,14944,15006,15034,15095,15126,15187,15218,15279,15309,15371,15400,15431,15461,15522,15553,15614,15645,15706,15737,15765,15796,15826,15887,15918,15949,15979,16010,16071,16161,16191,16222,16252,16314,16344,16405,16436,16526,16587,16617,16679,16709,16770,16801,16832,16861,16922,16953,17014,17045,17106,17136,17198,17226,17287,17318,17379,17440,17471,17501,17532,17563,17591,17622,17652,17713,17744,17805,17836,17897,17928,17956,17987,18017,18078,18109,18140,18170,18201,18262,18353,18414,18444,18506,18536,18597,18628,18659,18687,18718,18779,18809,18840,18871,18932,18962,19024,19052,19113,19144,19205,19236,19297,19327,19389,19417,19478,19509,19570,19631,19662,19692,19723],"y":[0.74615731926565221,0.7667535341183791,0.77160493600043267,0.74794314938457429,0.76097707890528121,0.73496986912036055,0.75602932041963977,0.75120192103190542,0.76911245281413509,0.81792901499154824,0.84502279069200514,0.81182012693786476,0.80593164200513323,0.79649544616701051,0.8017317220471043,0.82115288439391065,0.83956006958195484,0.85012323258528988,0.85873765705273686,0.87634734645732382,0.88082442046258413,0.9027715164590504,0.90818275279385619,0.88794178200005291,0.89645900846081406,0.88308015571739273,0.87351506433532389,0.85888519294233479,0.84810446013186924,0.85273297476009979,0.86490222766292579,0.90190843884492267,0.94777749406269707,0.94966764041677287,1.0014019566272057,1.0520778410940816,1.006846552427632,1.0064412128201334,0.9855129059585962,0.98260788283027722,0.9989012644330354,0.98794704808614442,0.93676815406731484,0.92695590869460964,0.80224627979036767,0.81846458080000573,0.80821140306718464,0.92412897957798745,0.85954955613139339,0.90563303295658582,0.92233903090392455,0.95574878024965471,0.95129373034229014,0.9418856670953949,0.96024586373280996,0.98990296633110586,0.96264920956713074,0.94144233370993535,0.97789941958625071,0.95147478678153863,0.98222176322958465,0.97513402471229937,1.0001000265982527,1.0297494764776134,1.0577197892556547,1.0237509980635202,1.0468025202552151,1.0245901524211669,1.0011012150599916,0.98231826467811212,0.99702886015817715,1.0117361571767998,1.0039152609969551,1.014713366065185,0.98241478509067592,0.99530220087273658,1.0184336731832146,1,1.0080645326040416,1.0033109372879832,0.97030860355437099,0.98370980647017903,0.99285146678792746,0.95256235805005041,0.96646367561617674,0.9491538004246669,0.96735182069909054,0.9588647352299754,0.94168170726149214,0.90678272528993487,0.91213408138564744,0.92225395370682273,0.94039759747398011,0.92004784603981449,0.89686097887611405,0.87306504383534611,0.86098528045630141,0.79299627447328846,0.79844145777152375,0.79421180097290522,0.75454615287608939,0.75496202153879777,0.74913101117765701,0.71944001640492516,0.71567618221767437,0.73869429659790242,0.79725743551668904,0.76481249548125041,0.76204990374684622,0.76370859072565533,0.74522313986446065,0.74485674977948046,0.76710650165257044,0.75124141078427931,0.73142187506130707,0.73989124528130812,0.79703503174939649,0.80171884932056192,0.77572299855686033,0.77571094747685654,0.79486200838770682,0.81287592059665492,0.77924099365161548,0.77562071974013225,0.77850090043604214,0.76058352148583386,0.76931954454594909,0.78051220517981368,0.76002279903139447,0.74658624862528344,0.76185251883990657,0.75963022779557943,0.75125836506934041,0.74410854752697642,0.76149863107212112,0.75677882775084004,0.75091989524048153,0.75660135996182276,0.75944557610653918,0.76911245281413509,0.70664384926192325,0.73624147531817008,0.73578104013549039,0.76610740982588488,0.75278529665963623,0.76970439914556887,0.80972315517787086,0.78111572636635063,0.78764963248967601,0.79706676366079876,0.82856906083841986,0.80381325593981456,0.80213688772408342,0.79228632746840266,0.8075653025854368,0.78282172406134454,0.78632427357452028,0.78948409617304904,0.77802846591289565,0.78955885043744489,0.77862822296744083,0.76074554552194307,0.73471604906265242,0.74560095765625933,0.7515406452066058,0.73285846591550918,0.73789843671519306,0.7438815565329403,0.75366466240058216,0.73671879151043196,0.72063760637826302,0.73765355236925445,0.75533264192570293],"text":["date: 2003-10-01<br />CAD: 0.7461573<br />colour: CAD","date: 2003-12-01<br />CAD: 0.7667535<br />colour: CAD","date: 2004-01-01<br />CAD: 0.7716049<br />colour: CAD","date: 2004-03-01<br />CAD: 0.7479431<br />colour: CAD","date: 2004-04-01<br />CAD: 0.7609771<br />colour: CAD","date: 2004-06-01<br />CAD: 0.7349699<br />colour: CAD","date: 2004-07-01<br />CAD: 0.7560293<br />colour: CAD","date: 2004-08-01<br />CAD: 0.7512019<br />colour: CAD","date: 2004-09-01<br />CAD: 0.7691125<br />colour: CAD","date: 2004-11-01<br />CAD: 0.8179290<br />colour: CAD","date: 2004-12-01<br />CAD: 0.8450228<br />colour: CAD","date: 2005-02-01<br />CAD: 0.8118201<br />colour: CAD","date: 2005-03-01<br />CAD: 0.8059316<br />colour: CAD","date: 2005-05-01<br />CAD: 0.7964954<br />colour: CAD","date: 2005-06-01<br />CAD: 0.8017317<br />colour: CAD","date: 2005-08-01<br />CAD: 0.8211529<br />colour: CAD","date: 2005-09-01<br />CAD: 0.8395601<br />colour: CAD","date: 2005-11-01<br />CAD: 0.8501232<br />colour: CAD","date: 2005-12-01<br />CAD: 0.8587377<br />colour: CAD","date: 2006-02-01<br />CAD: 0.8763473<br />colour: CAD","date: 2006-03-01<br />CAD: 0.8808244<br />colour: CAD","date: 2006-05-01<br />CAD: 0.9027715<br />colour: CAD","date: 2006-06-01<br />CAD: 0.9081828<br />colour: CAD","date: 2006-08-01<br />CAD: 0.8879418<br />colour: CAD","date: 2006-10-01<br />CAD: 0.8964590<br />colour: CAD","date: 2006-11-01<br />CAD: 0.8830802<br />colour: CAD","date: 2006-12-01<br />CAD: 0.8735151<br />colour: CAD","date: 2007-01-01<br />CAD: 0.8588852<br />colour: CAD","date: 2007-02-01<br />CAD: 0.8481045<br />colour: CAD","date: 2007-03-01<br />CAD: 0.8527330<br />colour: CAD","date: 2007-04-01<br />CAD: 0.8649022<br />colour: CAD","date: 2007-05-01<br />CAD: 0.9019084<br />colour: CAD","date: 2007-07-01<br />CAD: 0.9477775<br />colour: CAD","date: 2007-08-01<br />CAD: 0.9496676<br />colour: CAD","date: 2007-10-01<br />CAD: 1.0014020<br />colour: CAD","date: 2007-11-01<br />CAD: 1.0520778<br />colour: CAD","date: 2008-01-01<br />CAD: 1.0068466<br />colour: CAD","date: 2008-02-01<br />CAD: 1.0064412<br />colour: CAD","date: 2008-04-01<br />CAD: 0.9855129<br />colour: CAD","date: 2008-05-01<br />CAD: 0.9826079<br />colour: CAD","date: 2008-06-01<br />CAD: 0.9989013<br />colour: CAD","date: 2008-07-01<br />CAD: 0.9879470<br />colour: CAD","date: 2008-09-01<br />CAD: 0.9367682<br />colour: CAD","date: 2008-10-01<br />CAD: 0.9269559<br />colour: CAD","date: 2008-12-01<br />CAD: 0.8022463<br />colour: CAD","date: 2009-01-01<br />CAD: 0.8184646<br />colour: CAD","date: 2009-04-01<br />CAD: 0.8082114<br />colour: CAD","date: 2009-06-01<br />CAD: 0.9241290<br />colour: CAD","date: 2009-07-01<br />CAD: 0.8595496<br />colour: CAD","date: 2009-09-01<br />CAD: 0.9056330<br />colour: CAD","date: 2009-10-01<br />CAD: 0.9223390<br />colour: CAD","date: 2009-12-01<br />CAD: 0.9557488<br />colour: CAD","date: 2010-01-01<br />CAD: 0.9512937<br />colour: CAD","date: 2010-02-01<br />CAD: 0.9418857<br />colour: CAD","date: 2010-03-01<br />CAD: 0.9602459<br />colour: CAD","date: 2010-04-01<br />CAD: 0.9899030<br />colour: CAD","date: 2010-06-01<br />CAD: 0.9626492<br />colour: CAD","date: 2010-07-01<br />CAD: 0.9414423<br />colour: CAD","date: 2010-08-01<br />CAD: 0.9778994<br />colour: CAD","date: 2010-09-01<br />CAD: 0.9514748<br />colour: CAD","date: 2010-11-01<br />CAD: 0.9822218<br />colour: CAD","date: 2010-12-01<br />CAD: 0.9751340<br />colour: CAD","date: 2011-02-01<br />CAD: 1.0001000<br />colour: CAD","date: 2011-03-01<br />CAD: 1.0297495<br />colour: CAD","date: 2011-05-01<br />CAD: 1.0577198<br />colour: CAD","date: 2011-06-01<br />CAD: 1.0237510<br />colour: CAD","date: 2011-08-01<br />CAD: 1.0468025<br />colour: CAD","date: 2011-09-01<br />CAD: 1.0245902<br />colour: CAD","date: 2011-11-01<br />CAD: 1.0011012<br />colour: CAD","date: 2011-12-01<br />CAD: 0.9823183<br />colour: CAD","date: 2012-02-01<br />CAD: 0.9970289<br />colour: CAD","date: 2012-03-01<br />CAD: 1.0117362<br />colour: CAD","date: 2012-04-01<br />CAD: 1.0039153<br />colour: CAD","date: 2012-05-01<br />CAD: 1.0147134<br />colour: CAD","date: 2012-07-01<br />CAD: 0.9824148<br />colour: CAD","date: 2012-08-01<br />CAD: 0.9953022<br />colour: CAD","date: 2012-10-01<br />CAD: 1.0184337<br />colour: CAD","date: 2012-11-01<br />CAD: 1.0000000<br />colour: CAD","date: 2013-01-01<br />CAD: 1.0080645<br />colour: CAD","date: 2013-02-01<br />CAD: 1.0033109<br />colour: CAD","date: 2013-03-01<br />CAD: 0.9703086<br />colour: CAD","date: 2013-04-01<br />CAD: 0.9837098<br />colour: CAD","date: 2013-05-01<br />CAD: 0.9928515<br />colour: CAD","date: 2013-07-01<br />CAD: 0.9525624<br />colour: CAD","date: 2013-08-01<br />CAD: 0.9664637<br />colour: CAD","date: 2013-09-01<br />CAD: 0.9491538<br />colour: CAD","date: 2013-10-01<br />CAD: 0.9673518<br />colour: CAD","date: 2013-11-01<br />CAD: 0.9588647<br />colour: CAD","date: 2014-01-01<br />CAD: 0.9416817<br />colour: CAD","date: 2014-04-01<br />CAD: 0.9067827<br />colour: CAD","date: 2014-05-01<br />CAD: 0.9121341<br />colour: CAD","date: 2014-06-01<br />CAD: 0.9222540<br />colour: CAD","date: 2014-07-01<br />CAD: 0.9403976<br />colour: CAD","date: 2014-09-01<br />CAD: 0.9200478<br />colour: CAD","date: 2014-10-01<br />CAD: 0.8968610<br />colour: CAD","date: 2014-12-01<br />CAD: 0.8730650<br />colour: CAD","date: 2015-01-01<br />CAD: 0.8609853<br />colour: CAD","date: 2015-04-01<br />CAD: 0.7929963<br />colour: CAD","date: 2015-06-01<br />CAD: 0.7984415<br />colour: CAD","date: 2015-07-01<br />CAD: 0.7942118<br />colour: CAD","date: 2015-09-01<br />CAD: 0.7545462<br />colour: CAD","date: 2015-10-01<br />CAD: 0.7549620<br />colour: CAD","date: 2015-12-01<br />CAD: 0.7491310<br />colour: CAD","date: 2016-01-01<br />CAD: 0.7194400<br />colour: CAD","date: 2016-02-01<br />CAD: 0.7156762<br />colour: CAD","date: 2016-03-01<br />CAD: 0.7386943<br />colour: CAD","date: 2016-05-01<br />CAD: 0.7972574<br />colour: CAD","date: 2016-06-01<br />CAD: 0.7648125<br />colour: CAD","date: 2016-08-01<br />CAD: 0.7620499<br />colour: CAD","date: 2016-09-01<br />CAD: 0.7637086<br />colour: CAD","date: 2016-11-01<br />CAD: 0.7452231<br />colour: CAD","date: 2016-12-01<br />CAD: 0.7448567<br />colour: CAD","date: 2017-02-01<br />CAD: 0.7671065<br />colour: CAD","date: 2017-03-01<br />CAD: 0.7512414<br />colour: CAD","date: 2017-05-01<br />CAD: 0.7314219<br />colour: CAD","date: 2017-06-01<br />CAD: 0.7398912<br />colour: CAD","date: 2017-08-01<br />CAD: 0.7970350<br />colour: CAD","date: 2017-10-01<br />CAD: 0.8017188<br />colour: CAD","date: 2017-11-01<br />CAD: 0.7757230<br />colour: CAD","date: 2017-12-01<br />CAD: 0.7757109<br />colour: CAD","date: 2018-01-01<br />CAD: 0.7948620<br />colour: CAD","date: 2018-02-01<br />CAD: 0.8128759<br />colour: CAD","date: 2018-03-01<br />CAD: 0.7792410<br />colour: CAD","date: 2018-04-01<br />CAD: 0.7756207<br />colour: CAD","date: 2018-05-01<br />CAD: 0.7785009<br />colour: CAD","date: 2018-07-01<br />CAD: 0.7605835<br />colour: CAD","date: 2018-08-01<br />CAD: 0.7693195<br />colour: CAD","date: 2018-10-01<br />CAD: 0.7805122<br />colour: CAD","date: 2018-11-01<br />CAD: 0.7600228<br />colour: CAD","date: 2019-01-01<br />CAD: 0.7465862<br />colour: CAD","date: 2019-02-01<br />CAD: 0.7618525<br />colour: CAD","date: 2019-03-01<br />CAD: 0.7596302<br />colour: CAD","date: 2019-04-01<br />CAD: 0.7512584<br />colour: CAD","date: 2019-05-01<br />CAD: 0.7441085<br />colour: CAD","date: 2019-07-01<br />CAD: 0.7614986<br />colour: CAD","date: 2019-08-01<br />CAD: 0.7567788<br />colour: CAD","date: 2019-09-01<br />CAD: 0.7509199<br />colour: CAD","date: 2019-10-01<br />CAD: 0.7566014<br />colour: CAD","date: 2019-11-01<br />CAD: 0.7594456<br />colour: CAD","date: 2020-01-01<br />CAD: 0.7691125<br />colour: CAD","date: 2020-04-01<br />CAD: 0.7066438<br />colour: CAD","date: 2020-06-01<br />CAD: 0.7362415<br />colour: CAD","date: 2020-07-01<br />CAD: 0.7357810<br />colour: CAD","date: 2020-09-01<br />CAD: 0.7661074<br />colour: CAD","date: 2020-10-01<br />CAD: 0.7527853<br />colour: CAD","date: 2020-12-01<br />CAD: 0.7697044<br />colour: CAD","date: 2021-01-01<br />CAD: 0.8097232<br />colour: CAD","date: 2021-02-01<br />CAD: 0.7811157<br />colour: CAD","date: 2021-03-01<br />CAD: 0.7876496<br />colour: CAD","date: 2021-04-01<br />CAD: 0.7970668<br />colour: CAD","date: 2021-06-01<br />CAD: 0.8285691<br />colour: CAD","date: 2021-07-01<br />CAD: 0.8038133<br />colour: CAD","date: 2021-08-01<br />CAD: 0.8021369<br />colour: CAD","date: 2021-09-01<br />CAD: 0.7922863<br />colour: CAD","date: 2021-11-01<br />CAD: 0.8075653<br />colour: CAD","date: 2021-12-01<br />CAD: 0.7828217<br />colour: CAD","date: 2022-02-01<br />CAD: 0.7863243<br />colour: CAD","date: 2022-03-01<br />CAD: 0.7894841<br />colour: CAD","date: 2022-05-01<br />CAD: 0.7780285<br />colour: CAD","date: 2022-06-01<br />CAD: 0.7895589<br />colour: CAD","date: 2022-08-01<br />CAD: 0.7786282<br />colour: CAD","date: 2022-09-01<br />CAD: 0.7607455<br />colour: CAD","date: 2022-11-01<br />CAD: 0.7347160<br />colour: CAD","date: 2022-12-01<br />CAD: 0.7456010<br />colour: CAD","date: 2023-02-01<br />CAD: 0.7515406<br />colour: CAD","date: 2023-03-01<br />CAD: 0.7328585<br />colour: CAD","date: 2023-05-01<br />CAD: 0.7378984<br />colour: CAD","date: 2023-06-01<br />CAD: 0.7438816<br />colour: CAD","date: 2023-08-01<br />CAD: 0.7536647<br />colour: CAD","date: 2023-10-01<br />CAD: 0.7367188<br />colour: CAD","date: 2023-11-01<br />CAD: 0.7206376<br />colour: CAD","date: 2023-12-01<br />CAD: 0.7376536<br />colour: CAD","date: 2024-01-01<br />CAD: 0.7553326<br />colour: CAD"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(174,5,129,1)","dash":"solid"},"hoveron":"points","name":"CAD","legendgroup":"CAD","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[12326,12387,12418,12478,12509,12570,12600,12631,12662,12723,12753,12815,12843,12904,12935,12996,13027,13088,13118,13180,13208,13269,13300,13361,13422,13453,13483,13514,13545,13573,13604,13634,13695,13726,13787,13818,13879,13910,13970,14000,14031,14061,14123,14153,14214,14245,14335,14396,14426,14488,14518,14579,14610,14641,14669,14700,14761,14791,14822,14853,14914,14944,15006,15034,15095,15126,15187,15218,15279,15309,15371,15400,15431,15461,15522,15553,15614,15645,15706,15737,15765,15796,15826,15887,15918,15949,15979,16010,16071,16161,16191,16222,16252,16314,16344,16405,16436,16526,16587,16617,16679,16709,16770,16801,16832,16861,16922,16953,17014,17045,17106,17136,17198,17226,17287,17318,17379,17440,17471,17501,17532,17563,17591,17622,17652,17713,17744,17805,17836,17897,17928,17956,17987,18017,18078,18109,18140,18170,18201,18262,18353,18414,18444,18506,18536,18597,18628,18659,18687,18718,18779,18809,18840,18871,18932,18962,19024,19052,19113,19144,19205,19236,19297,19327,19389,19417,19478,19509,19570,19631,19662,19692,19723],"y":[0.82535692236781921,0.85738840803201499,0.86347792324475292,0.86809399506110452,0.87470440828145346,0.88229288810530082,0.88304258067239383,0.88485292809452143,0.87794522553929411,0.88331554249073341,0.8851460543638261,0.8967613500648639,0.9240873682357662,0.8981407087746458,0.9219895725284768,0.95776246131981091,0.98650853968585595,0.9420365097258343,0.98048457816198842,0.9358937807599621,0.92956889660989317,0.94338217603886043,0.93578257658779385,0.9536293843781416,0.91817730816757281,0.93718210270799474,0.9345825519549571,0.91661389147705041,0.94456810778382017,0.9350986894784461,0.94992277141180703,0.94648723482873198,0.93950892359567861,0.93535727411811098,0.965589057873386,0.97472168047959107,0.98742041664856428,1.0097695262763482,1.0407562781051336,1.0659407857560899,1.0884946359062488,1.0607303341385936,0.97230670033169486,0.90014450680281466,0.8203463642329949,0.82585098483860908,0.84015958560149562,0.88952303302816815,0.86959815324045497,0.8681265897411099,0.89656024499166898,0.91853789262202701,0.92577459925346794,0.91887651425495465,0.91924202592635496,0.92506005018841608,0.90380981538487659,0.90302102435475307,0.89980195512008865,0.89463446660182766,0.92430376125008862,0.94198217509070126,0.94465018965940639,0.970494613538468,0.95810178020810777,0.94928850924038854,0.93560387636139786,0.93067340048848579,0.94354080511940852,0.94596631733876457,0.93702878673689016,0.93728141177898949,0.93770834514875023,0.92760591680911508,0.90675909046085212,0.92936791024771981,0.92383183008801384,0.90973284210664451,0.91374435412938892,0.92162667928610875,0.92414003514668364,0.92607972023826046,0.92225072316127243,0.93603873421061479,0.93329064615585111,0.92820981316069617,0.91334402897949696,0.89689581534354046,0.91646418908391158,0.93229231103124655,0.93241020956158793,0.9373848688112667,0.92754890307254012,0.90998565890811012,0.89261904725696295,0.82863921459654133,0.79725957094813116,0.81104683185389481,0.82278911196504434,0.79529196822600412,0.77558577922756533,0.77721840517938001,0.74968342562957935,0.73442919693003506,0.7347060343859384,0.76135202302957328,0.78573312596969236,0.79019826500595913,0.77677547681952552,0.77515271756530946,0.77643620028102922,0.79282334771102803,0.80246547205375651,0.79166549869147773,0.79577003432775861,0.7862942419434521,0.79587094326431862,0.80242584738151734,0.81298796486440805,0.80197334665893005,0.81646809447790758,0.80743681266716127,0.81464965596116035,0.83386283376769188,0.83994856273199558,0.82370928484762929,0.80730547104064465,0.78734959583905195,0.76052190084901594,0.79273184595884916,0.80320578916179264,0.81016660064268509,0.820363287388294,0.8051220210501524,0.80229975660437725,0.79681780448870976,0.80371511110443028,0.79215269071284644,0.79613020422116587,0.79336828432066187,0.68596513852048824,0.77210912773652185,0.78511137316278667,0.79473194847632056,0.79169218450991352,0.81291348956583964,0.83032491996591673,0.85554397738197041,0.85952098884049799,0.8687386685311117,0.87934914865298675,0.87016754367264648,0.85287526473546482,0.86366034600656072,0.87647348192885299,0.86715869390331746,0.92315353107654818,0.96438463482716208,0.94569671633547703,0.92412566880325042,0.88155831281142139,0.85407328316383313,0.84775713159032162,0.83362797397917743,0.83735482556131346,0.83129380687223242,0.82703862995166189,0.82657899456481243,0.83848180258749339,0.83874945819195557,0.82035685380882328,0.81780107007568958,0.82133636610553118],"text":["date: 2003-10-01<br />BCPI: 0.8253569<br />colour: BCPI","date: 2003-12-01<br />BCPI: 0.8573884<br />colour: BCPI","date: 2004-01-01<br />BCPI: 0.8634779<br />colour: BCPI","date: 2004-03-01<br />BCPI: 0.8680940<br />colour: BCPI","date: 2004-04-01<br />BCPI: 0.8747044<br />colour: BCPI","date: 2004-06-01<br />BCPI: 0.8822929<br />colour: BCPI","date: 2004-07-01<br />BCPI: 0.8830426<br />colour: BCPI","date: 2004-08-01<br />BCPI: 0.8848529<br />colour: BCPI","date: 2004-09-01<br />BCPI: 0.8779452<br />colour: BCPI","date: 2004-11-01<br />BCPI: 0.8833155<br />colour: BCPI","date: 2004-12-01<br />BCPI: 0.8851461<br />colour: BCPI","date: 2005-02-01<br />BCPI: 0.8967614<br />colour: BCPI","date: 2005-03-01<br />BCPI: 0.9240874<br />colour: BCPI","date: 2005-05-01<br />BCPI: 0.8981407<br />colour: BCPI","date: 2005-06-01<br />BCPI: 0.9219896<br />colour: BCPI","date: 2005-08-01<br />BCPI: 0.9577625<br />colour: BCPI","date: 2005-09-01<br />BCPI: 0.9865085<br />colour: BCPI","date: 2005-11-01<br />BCPI: 0.9420365<br />colour: BCPI","date: 2005-12-01<br />BCPI: 0.9804846<br />colour: BCPI","date: 2006-02-01<br />BCPI: 0.9358938<br />colour: BCPI","date: 2006-03-01<br />BCPI: 0.9295689<br />colour: BCPI","date: 2006-05-01<br />BCPI: 0.9433822<br />colour: BCPI","date: 2006-06-01<br />BCPI: 0.9357826<br />colour: BCPI","date: 2006-08-01<br />BCPI: 0.9536294<br />colour: BCPI","date: 2006-10-01<br />BCPI: 0.9181773<br />colour: BCPI","date: 2006-11-01<br />BCPI: 0.9371821<br />colour: BCPI","date: 2006-12-01<br />BCPI: 0.9345826<br />colour: BCPI","date: 2007-01-01<br />BCPI: 0.9166139<br />colour: BCPI","date: 2007-02-01<br />BCPI: 0.9445681<br />colour: BCPI","date: 2007-03-01<br />BCPI: 0.9350987<br />colour: BCPI","date: 2007-04-01<br />BCPI: 0.9499228<br />colour: BCPI","date: 2007-05-01<br />BCPI: 0.9464872<br />colour: BCPI","date: 2007-07-01<br />BCPI: 0.9395089<br />colour: BCPI","date: 2007-08-01<br />BCPI: 0.9353573<br />colour: BCPI","date: 2007-10-01<br />BCPI: 0.9655891<br />colour: BCPI","date: 2007-11-01<br />BCPI: 0.9747217<br />colour: BCPI","date: 2008-01-01<br />BCPI: 0.9874204<br />colour: BCPI","date: 2008-02-01<br />BCPI: 1.0097695<br />colour: BCPI","date: 2008-04-01<br />BCPI: 1.0407563<br />colour: BCPI","date: 2008-05-01<br />BCPI: 1.0659408<br />colour: BCPI","date: 2008-06-01<br />BCPI: 1.0884946<br />colour: BCPI","date: 2008-07-01<br />BCPI: 1.0607303<br />colour: BCPI","date: 2008-09-01<br />BCPI: 0.9723067<br />colour: BCPI","date: 2008-10-01<br />BCPI: 0.9001445<br />colour: BCPI","date: 2008-12-01<br />BCPI: 0.8203464<br />colour: BCPI","date: 2009-01-01<br />BCPI: 0.8258510<br />colour: BCPI","date: 2009-04-01<br />BCPI: 0.8401596<br />colour: BCPI","date: 2009-06-01<br />BCPI: 0.8895230<br />colour: BCPI","date: 2009-07-01<br />BCPI: 0.8695982<br />colour: BCPI","date: 2009-09-01<br />BCPI: 0.8681266<br />colour: BCPI","date: 2009-10-01<br />BCPI: 0.8965602<br />colour: BCPI","date: 2009-12-01<br />BCPI: 0.9185379<br />colour: BCPI","date: 2010-01-01<br />BCPI: 0.9257746<br />colour: BCPI","date: 2010-02-01<br />BCPI: 0.9188765<br />colour: BCPI","date: 2010-03-01<br />BCPI: 0.9192420<br />colour: BCPI","date: 2010-04-01<br />BCPI: 0.9250601<br />colour: BCPI","date: 2010-06-01<br />BCPI: 0.9038098<br />colour: BCPI","date: 2010-07-01<br />BCPI: 0.9030210<br />colour: BCPI","date: 2010-08-01<br />BCPI: 0.8998020<br />colour: BCPI","date: 2010-09-01<br />BCPI: 0.8946345<br />colour: BCPI","date: 2010-11-01<br />BCPI: 0.9243038<br />colour: BCPI","date: 2010-12-01<br />BCPI: 0.9419822<br />colour: BCPI","date: 2011-02-01<br />BCPI: 0.9446502<br />colour: BCPI","date: 2011-03-01<br />BCPI: 0.9704946<br />colour: BCPI","date: 2011-05-01<br />BCPI: 0.9581018<br />colour: BCPI","date: 2011-06-01<br />BCPI: 0.9492885<br />colour: BCPI","date: 2011-08-01<br />BCPI: 0.9356039<br />colour: BCPI","date: 2011-09-01<br />BCPI: 0.9306734<br />colour: BCPI","date: 2011-11-01<br />BCPI: 0.9435408<br />colour: BCPI","date: 2011-12-01<br />BCPI: 0.9459663<br />colour: BCPI","date: 2012-02-01<br />BCPI: 0.9370288<br />colour: BCPI","date: 2012-03-01<br />BCPI: 0.9372814<br />colour: BCPI","date: 2012-04-01<br />BCPI: 0.9377083<br />colour: BCPI","date: 2012-05-01<br />BCPI: 0.9276059<br />colour: BCPI","date: 2012-07-01<br />BCPI: 0.9067591<br />colour: BCPI","date: 2012-08-01<br />BCPI: 0.9293679<br />colour: BCPI","date: 2012-10-01<br />BCPI: 0.9238318<br />colour: BCPI","date: 2012-11-01<br />BCPI: 0.9097328<br />colour: BCPI","date: 2013-01-01<br />BCPI: 0.9137444<br />colour: BCPI","date: 2013-02-01<br />BCPI: 0.9216267<br />colour: BCPI","date: 2013-03-01<br />BCPI: 0.9241400<br />colour: BCPI","date: 2013-04-01<br />BCPI: 0.9260797<br />colour: BCPI","date: 2013-05-01<br />BCPI: 0.9222507<br />colour: BCPI","date: 2013-07-01<br />BCPI: 0.9360387<br />colour: BCPI","date: 2013-08-01<br />BCPI: 0.9332906<br />colour: BCPI","date: 2013-09-01<br />BCPI: 0.9282098<br />colour: BCPI","date: 2013-10-01<br />BCPI: 0.9133440<br />colour: BCPI","date: 2013-11-01<br />BCPI: 0.8968958<br />colour: BCPI","date: 2014-01-01<br />BCPI: 0.9164642<br />colour: BCPI","date: 2014-04-01<br />BCPI: 0.9322923<br />colour: BCPI","date: 2014-05-01<br />BCPI: 0.9324102<br />colour: BCPI","date: 2014-06-01<br />BCPI: 0.9373849<br />colour: BCPI","date: 2014-07-01<br />BCPI: 0.9275489<br />colour: BCPI","date: 2014-09-01<br />BCPI: 0.9099857<br />colour: BCPI","date: 2014-10-01<br />BCPI: 0.8926190<br />colour: BCPI","date: 2014-12-01<br />BCPI: 0.8286392<br />colour: BCPI","date: 2015-01-01<br />BCPI: 0.7972596<br />colour: BCPI","date: 2015-04-01<br />BCPI: 0.8110468<br />colour: BCPI","date: 2015-06-01<br />BCPI: 0.8227891<br />colour: BCPI","date: 2015-07-01<br />BCPI: 0.7952920<br />colour: BCPI","date: 2015-09-01<br />BCPI: 0.7755858<br />colour: BCPI","date: 2015-10-01<br />BCPI: 0.7772184<br />colour: BCPI","date: 2015-12-01<br />BCPI: 0.7496834<br />colour: BCPI","date: 2016-01-01<br />BCPI: 0.7344292<br />colour: BCPI","date: 2016-02-01<br />BCPI: 0.7347060<br />colour: BCPI","date: 2016-03-01<br />BCPI: 0.7613520<br />colour: BCPI","date: 2016-05-01<br />BCPI: 0.7857331<br />colour: BCPI","date: 2016-06-01<br />BCPI: 0.7901983<br />colour: BCPI","date: 2016-08-01<br />BCPI: 0.7767755<br />colour: BCPI","date: 2016-09-01<br />BCPI: 0.7751527<br />colour: BCPI","date: 2016-11-01<br />BCPI: 0.7764362<br />colour: BCPI","date: 2016-12-01<br />BCPI: 0.7928233<br />colour: BCPI","date: 2017-02-01<br />BCPI: 0.8024655<br />colour: BCPI","date: 2017-03-01<br />BCPI: 0.7916655<br />colour: BCPI","date: 2017-05-01<br />BCPI: 0.7957700<br />colour: BCPI","date: 2017-06-01<br />BCPI: 0.7862942<br />colour: BCPI","date: 2017-08-01<br />BCPI: 0.7958709<br />colour: BCPI","date: 2017-10-01<br />BCPI: 0.8024258<br />colour: BCPI","date: 2017-11-01<br />BCPI: 0.8129880<br />colour: BCPI","date: 2017-12-01<br />BCPI: 0.8019733<br />colour: BCPI","date: 2018-01-01<br />BCPI: 0.8164681<br />colour: BCPI","date: 2018-02-01<br />BCPI: 0.8074368<br />colour: BCPI","date: 2018-03-01<br />BCPI: 0.8146497<br />colour: BCPI","date: 2018-04-01<br />BCPI: 0.8338628<br />colour: BCPI","date: 2018-05-01<br />BCPI: 0.8399486<br />colour: BCPI","date: 2018-07-01<br />BCPI: 0.8237093<br />colour: BCPI","date: 2018-08-01<br />BCPI: 0.8073055<br />colour: BCPI","date: 2018-10-01<br />BCPI: 0.7873496<br />colour: BCPI","date: 2018-11-01<br />BCPI: 0.7605219<br />colour: BCPI","date: 2019-01-01<br />BCPI: 0.7927318<br />colour: BCPI","date: 2019-02-01<br />BCPI: 0.8032058<br />colour: BCPI","date: 2019-03-01<br />BCPI: 0.8101666<br />colour: BCPI","date: 2019-04-01<br />BCPI: 0.8203633<br />colour: BCPI","date: 2019-05-01<br />BCPI: 0.8051220<br />colour: BCPI","date: 2019-07-01<br />BCPI: 0.8022998<br />colour: BCPI","date: 2019-08-01<br />BCPI: 0.7968178<br />colour: BCPI","date: 2019-09-01<br />BCPI: 0.8037151<br />colour: BCPI","date: 2019-10-01<br />BCPI: 0.7921527<br />colour: BCPI","date: 2019-11-01<br />BCPI: 0.7961302<br />colour: BCPI","date: 2020-01-01<br />BCPI: 0.7933683<br />colour: BCPI","date: 2020-04-01<br />BCPI: 0.6859651<br />colour: BCPI","date: 2020-06-01<br />BCPI: 0.7721091<br />colour: BCPI","date: 2020-07-01<br />BCPI: 0.7851114<br />colour: BCPI","date: 2020-09-01<br />BCPI: 0.7947319<br />colour: BCPI","date: 2020-10-01<br />BCPI: 0.7916922<br />colour: BCPI","date: 2020-12-01<br />BCPI: 0.8129135<br />colour: BCPI","date: 2021-01-01<br />BCPI: 0.8303249<br />colour: BCPI","date: 2021-02-01<br />BCPI: 0.8555440<br />colour: BCPI","date: 2021-03-01<br />BCPI: 0.8595210<br />colour: BCPI","date: 2021-04-01<br />BCPI: 0.8687387<br />colour: BCPI","date: 2021-06-01<br />BCPI: 0.8793491<br />colour: BCPI","date: 2021-07-01<br />BCPI: 0.8701675<br />colour: BCPI","date: 2021-08-01<br />BCPI: 0.8528753<br />colour: BCPI","date: 2021-09-01<br />BCPI: 0.8636603<br />colour: BCPI","date: 2021-11-01<br />BCPI: 0.8764735<br />colour: BCPI","date: 2021-12-01<br />BCPI: 0.8671587<br />colour: BCPI","date: 2022-02-01<br />BCPI: 0.9231535<br />colour: BCPI","date: 2022-03-01<br />BCPI: 0.9643846<br />colour: BCPI","date: 2022-05-01<br />BCPI: 0.9456967<br />colour: BCPI","date: 2022-06-01<br />BCPI: 0.9241257<br />colour: BCPI","date: 2022-08-01<br />BCPI: 0.8815583<br />colour: BCPI","date: 2022-09-01<br />BCPI: 0.8540733<br />colour: BCPI","date: 2022-11-01<br />BCPI: 0.8477571<br />colour: BCPI","date: 2022-12-01<br />BCPI: 0.8336280<br />colour: BCPI","date: 2023-02-01<br />BCPI: 0.8373548<br />colour: BCPI","date: 2023-03-01<br />BCPI: 0.8312938<br />colour: BCPI","date: 2023-05-01<br />BCPI: 0.8270386<br />colour: BCPI","date: 2023-06-01<br />BCPI: 0.8265790<br />colour: BCPI","date: 2023-08-01<br />BCPI: 0.8384818<br />colour: BCPI","date: 2023-10-01<br />BCPI: 0.8387495<br />colour: BCPI","date: 2023-11-01<br />BCPI: 0.8203569<br />colour: BCPI","date: 2023-12-01<br />BCPI: 0.8178011<br />colour: BCPI","date: 2024-01-01<br />BCPI: 0.8213364<br />colour: BCPI"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(29,91,121,1)","dash":"solid"},"hoveron":"points","name":"BCPI","legendgroup":"BCPI","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":43.762557077625573,"r":7.3059360730593621,"b":25.570776255707766,"l":43.105022831050235},"font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"title":{"text":"CAD/USD and BCPI Commodity Index","font":{"color":"rgba(0,0,0,1)","family":"","size":17.534246575342465},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[11956.15,20092.849999999999],"tickmode":"array","ticktext":["2005","2010","2015","2020","2025"],"tickvals":[12784,14610,16436,18262,20089],"categoryorder":"array","categoryarray":["2005","2010","2015","2020","2025"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.66583866365120026,1.1086211107755368],"tickmode":"array","ticktext":["0.7","0.8","0.9","1.0","1.1"],"tickvals":[0.70000000000000007,0.80000000000000004,0.90000000000000013,1,1.1000000000000001],"categoryorder":"array","categoryarray":["0.7","0.8","0.9","1.0","1.1"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":{"text":"CAD/USD","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498},"title":{"text":"colour","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"3bcc7e1b2db5":{"x":{},"y":{},"colour":{},"type":"scatter"},"3bcc32c83e56":{"x":{},"y":{},"colour":{}}},"cur_data":"3bcc7e1b2db5","visdat":{"3bcc7e1b2db5":["function (y) ","x"],"3bcc32c83e56":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="description-and-type-of-strategy" class="level2">
+<h2 class="anchored" data-anchor-id="description-and-type-of-strategy">Description and Type of Strategy</h2>
+<ul>
+<li><p>Our strategy looks at the short term performance of our commodity index</p></li>
+<li><p>If Commodity Index returns are positive in last n days, a long position is assumed</p></li>
+<li><p>Position is held for m days and reassessed thereafter</p></li>
+</ul>
+<section id="when-does-it-work" class="level3">
+<h3 class="anchored" data-anchor-id="when-does-it-work">When does it work?</h3>
+<ul>
+<li><p>When the currency is highly correlated to commodity price movements</p></li>
+<li><p>When the economy is heavily reliant on commodity exports</p></li>
+<li><p>Our model protects traders from long drawdowns</p></li>
+</ul>
+</section>
+<section id="when-it-may-not-work" class="level3">
+<h3 class="anchored" data-anchor-id="when-it-may-not-work">When it may not work?</h3>
+<ul>
+<li><p>During rapid market movements</p></li>
+<li><p>As trading frequency increases, returns decrease</p></li>
+<li><p>Rapid changes to commodity export proportion (index weights are fixed in this analysis)</p></li>
+<li><p>Factors not taken into consideration.</p>
+<ul>
+<li><p>Wars, financial crisis, inflation, natural disasters</p></li>
+<li><p>Non-commodity to the economy</p></li>
+<li><p>Foreign policy changes (tariffs, taxes, trade conflicts)</p></li>
+<li><p>Transactions costs, Short selling costs</p></li>
+</ul></li>
+</ul>
+</section>
+</section>
+</section>
+<section id="model-implementation" class="level1">
+<h1>Model Implementation</h1>
+<section id="data-sources" class="level2">
+<h2 class="anchored" data-anchor-id="data-sources">Data Sources</h2>
+<ul>
+<li><p>Yahoo Finance</p></li>
+<li><p>COMEX *</p></li>
+<li><p>New York Mercantile Exchange (NYMEX) *</p></li>
+<li><p>Chicago Mercantile Exchange (CME) *</p></li>
+<li><p>Chicago Board of Trade (CBOT) *</p></li>
+<li><p>Minneapolis Grain Exchange (MGEX) *</p></li>
+<li><p>Intercontinental Exchange (ICE) Canada *</p></li>
+<li><p>Bank of Canada</p></li>
+</ul>
+<p>* Via MorningStar</p>
+<section id="index-weighting" class="level3">
+<h3 class="anchored" data-anchor-id="index-weighting">Index Weighting</h3>
+<ul>
+<li><p>Weighting was assigned to match the 2013 export percentage. (<a href="https://oec.world/en/profile/country/can?yearSelector1=2021" title="OEC Export Data">2013 Export Percentages</a>)</p>
+<ul>
+<li>I.e. 17.7% of Canadian exports in 2013 were WTI, compared to the exports of other commodities in our index, WTI is weighted at 66.8%</li>
+</ul></li>
+</ul>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Commodity</th>
+<th>Weight</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>West Texas Intermediate (CL)</td>
+<td>66.80%</td>
+</tr>
+<tr class="even">
+<td>Gold (GC)</td>
+<td>13.70%</td>
+</tr>
+<tr class="odd">
+<td>Natural Gas (NG)</td>
+<td>8.72%</td>
+</tr>
+<tr class="even">
+<td>Wheat (MWE)</td>
+<td>6.00%</td>
+</tr>
+<tr class="odd">
+<td>Silver (SI)</td>
+<td>1.85%</td>
+</tr>
+<tr class="even">
+<td>Live Cattle (LE)</td>
+<td>1.09%</td>
+</tr>
+<tr class="odd">
+<td>Copper (HG)</td>
+<td>1.06%</td>
+</tr>
+<tr class="even">
+<td>Corn (ZC)</td>
+<td>0.49%</td>
+</tr>
+<tr class="odd">
+<td>Live Hogs (HE)</td>
+<td>0.29%</td>
+</tr>
+</tbody>
+</table>
+<section id="correlation-matrix-of-commodity-index-and-cad" class="level4">
+<h4 class="anchored" data-anchor-id="correlation-matrix-of-commodity-index-and-cad">Correlation Matrix of Commodity Index and CAD</h4>
+<ul>
+<li>Note lowercase cad represents week ahead returns for CAD/USD</li>
+</ul>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="CAD_USD_Forcasting_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="indicators" class="level2">
+<h2 class="anchored" data-anchor-id="indicators">Indicators</h2>
+<ul>
+<li><p>Commodity Index return over the last <u><em>n</em></u> days</p>
+<ul>
+<li><em>index_return = sum(ret_index_i + ret_index_(i-1) … +ret_index_(i-n))</em></li>
+</ul></li>
+<li><p>Held and reassessed every <u><em>m</em></u> days</p>
+<ul>
+<li><em>cad_return = sum(ret_cad_(i+1) + ret_cad_(i+2) … +ret_cad_(i+m))</em></li>
+</ul></li>
+</ul>
+</section>
+<section id="signals-trades" class="level2">
+<h2 class="anchored" data-anchor-id="signals-trades">Signals &amp; Trades</h2>
+<section id="signals" class="level3">
+<h3 class="anchored" data-anchor-id="signals">Signals</h3>
+<ul>
+<li><p>If last n trading days of Commodity Index yield positive results, long</p></li>
+<li><p>If last n trading days of Commodity Index yield negative results, short</p></li>
+<li><p>No signals generated on weekends or during holding period</p></li>
+</ul>
+</section>
+<section id="trades" class="level3">
+<h3 class="anchored" data-anchor-id="trades">Trades</h3>
+<ul>
+<li><p>Signals are made at end of day and incorporate end of day data.</p></li>
+<li><p>Trades are effective at market open the following trading day</p></li>
+<li><p>Once a trade has been put in, it will not change for the holding period.</p>
+<ul>
+<li><p>That is, no signals will be generated during the holding period</p></li>
+<li><p>Trades will be reassessed after the holding period is over</p></li>
+</ul></li>
+</ul>
+<ul>
+<li>Below is an output of the top 5 highest R^2 values. It is noticeable that the 5 highest R^2 values all have holding periods of 17 trading days or greater.</li>
+</ul>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Back</th>
+<th style="text-align: right;">Hold</th>
+<th style="text-align: right;">r_squared</th>
+<th style="text-align: right;">p_value</th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">std_error</th>
+<th style="text-align: right;">df</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">0.2422</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">0.4435</td>
+<td style="text-align: right;">0.0944</td>
+<td style="text-align: right;">69</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">0.1466</td>
+<td style="text-align: right;">0.0010</td>
+<td style="text-align: right;">0.2777</td>
+<td style="text-align: right;">0.0807</td>
+<td style="text-align: right;">69</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">29</td>
+<td style="text-align: right;">0.1222</td>
+<td style="text-align: right;">0.0021</td>
+<td style="text-align: right;">0.4793</td>
+<td style="text-align: right;">0.1503</td>
+<td style="text-align: right;">73</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">0.1073</td>
+<td style="text-align: right;">0.0002</td>
+<td style="text-align: right;">0.1291</td>
+<td style="text-align: right;">0.0333</td>
+<td style="text-align: right;">125</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">0.1043</td>
+<td style="text-align: right;">0.0002</td>
+<td style="text-align: right;">0.1426</td>
+<td style="text-align: right;">0.0374</td>
+<td style="text-align: right;">125</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<section id="real-p-value" class="level4">
+<h4 class="anchored" data-anchor-id="real-p-value">Real P-value</h4>
+<ul>
+<li><p>The p-value is the probability of observing a test statistic as extreme or greater than the one computed, assuming that the null hypothesis is true.</p></li>
+<li><p>We can clearly see a relationship between p-values and the number of observations (degrees of freedom).</p></li>
+<li><p>Real P-value is the p-value adjusted for the number of observations (degrees of freedom)</p></li>
+</ul>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="CAD_USD_Forcasting_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="training-period" class="level2">
+<h2 class="anchored" data-anchor-id="training-period">Training Period</h2>
+<ul>
+<li><p>75% of the data was used to create the training set</p>
+<ul>
+<li>April 17, 2014 - August 19, 2021</li>
+</ul></li>
+<li><p>Inputs</p>
+<ul>
+<li><p>n (Back) = 1:10</p></li>
+<li><p>m (Hold) = 2:30</p></li>
+</ul></li>
+</ul>
+<section id="optimization" class="level3">
+<h3 class="anchored" data-anchor-id="optimization">Optimization</h3>
+<p>Our model optimizes:</p>
+<ul>
+<li><p>The look back period</p>
+<ul>
+<li>We receive optimal cumulative returns if we look at the returns 2 previous trading days for our commodity index.</li>
+</ul></li>
+<li><p>Optimal time to hold</p>
+<ul>
+<li><p>The optimal time to hold the position is 30 days.</p></li>
+<li><p>This allows time for any major market movements to settle without causing multiple trades in and out of the market.</p></li>
+</ul></li>
+</ul>
+<p>The model considers the following values when optimizing:</p>
+<ul>
+<li><p>R Squared</p></li>
+<li><p>P-Value</p></li>
+<li><p>Estimate</p></li>
+</ul>
+<section id="buy-and-hold-strategy" class="level5">
+<h5 class="anchored" data-anchor-id="buy-and-hold-strategy">Buy and Hold Strategy</h5>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Buy and hold return: -14.22% </code></pre>
+</div>
+</div>
+</section>
+<section id="training-results" class="level4">
+<h4 class="anchored" data-anchor-id="training-results">Training Results</h4>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<caption>Training Strategy Statistics</caption>
+<colgroup>
+<col style="width: 13%">
+<col style="width: 10%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">CumReturn</th>
+<th style="text-align: right;">Ret.Ann</th>
+<th style="text-align: right;">SD.Ann</th>
+<th style="text-align: right;">Sharpe</th>
+<th style="text-align: right;">Omega</th>
+<th style="text-align: right;">X..Win</th>
+<th style="text-align: right;">X..InMrkt</th>
+<th style="text-align: right;">DD.Length</th>
+<th style="text-align: right;">DD.Max</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.4629</td>
+<td style="text-align: right;">0.0514</td>
+<td style="text-align: right;">0.0759</td>
+<td style="text-align: right;">0.6773</td>
+<td style="text-align: right;">0.1269</td>
+<td style="text-align: right;">0.495</td>
+<td style="text-align: right;">0.999</td>
+<td style="text-align: right;">500</td>
+<td style="text-align: right;">-0.1071</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="CAD_USD_Forcasting_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="CAD_USD_Forcasting_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="risk-appetite" class="level3">
+<h3 class="anchored" data-anchor-id="risk-appetite">Risk Appetite</h3>
+<ul>
+<li><p>Very risk-averse</p></li>
+<li><p>Autocorrelation Risk: Choosing optimal inputs from R^2 and not Cumulative Returns</p></li>
+<li><p>We seek to lower drawdowns and manage foreign exchange risk rather than increase profits</p></li>
+<li><p>Strategy is designed to hedge risk.</p></li>
+</ul>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="CAD_USD_Forcasting_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Note: Back is the look-back period, and front is the time held.</p>
+</section>
+</section>
+<section id="test-period-performance" class="level2">
+<h2 class="anchored" data-anchor-id="test-period-performance">Test Period Performance</h2>
+<ul>
+<li>Test results were done from August 20, 2021, to Present</li>
+</ul>
+<section id="optimal-parameters" class="level5">
+<h5 class="anchored" data-anchor-id="optimal-parameters">Optimal Parameters:</h5>
+<ul>
+<li><p>Look back: 2 trading days</p></li>
+<li><p>Holding period: 30 trading days</p></li>
+<li><p>Results from the backtest proved our strategy profitable in the out-of-sample holdout dataset.</p></li>
+<li><p>Although average annual returns are lower than in the training set, the strategy still outperforms the buy and hold return.</p></li>
+</ul>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Buy and hold return: -8.17% </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="CAD_USD_Forcasting_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="CAD_USD_Forcasting_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="test-strategy-statistics" class="level4">
+<h4 class="anchored" data-anchor-id="test-strategy-statistics">Test Strategy Statistics</h4>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<caption>Test Strategy Statistics</caption>
+<colgroup>
+<col style="width: 13%">
+<col style="width: 10%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">CumReturn</th>
+<th style="text-align: right;">Ret.Ann</th>
+<th style="text-align: right;">SD.Ann</th>
+<th style="text-align: right;">Sharpe</th>
+<th style="text-align: right;">Omega</th>
+<th style="text-align: right;">X..Win</th>
+<th style="text-align: right;">X..InMrkt</th>
+<th style="text-align: right;">DD.Length</th>
+<th style="text-align: right;">DD.Max</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.0329</td>
+<td style="text-align: right;">0.0136</td>
+<td style="text-align: right;">0.0677</td>
+<td style="text-align: right;">0.2006</td>
+<td style="text-align: right;">0.0393</td>
+<td style="text-align: right;">0.5</td>
+<td style="text-align: right;">0.9967</td>
+<td style="text-align: right;">276</td>
+<td style="text-align: right;">-0.1009</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="learnings" class="level1">
+<h1>Learnings</h1>
+<section id="factors" class="level3">
+<h3 class="anchored" data-anchor-id="factors">Factors</h3>
+<ul>
+<li><p>Currency markets are subject to many factors, including interest rates, inflation, and political stability.</p></li>
+<li><p>Expectations for profit should be limited</p></li>
+</ul>
+</section>
+<section id="modeling-strategies" class="level3">
+<h3 class="anchored" data-anchor-id="modeling-strategies">Modeling Strategies</h3>
+<section id="pca-principal-component-analysis" class="level4">
+<h4 class="anchored" data-anchor-id="pca-principal-component-analysis">PCA (Principal Component Analysis)</h4>
+<ul>
+<li><p>In linear regression. You must have more observations than predicting variables.</p></li>
+<li><p>PCA reduces the number of columns by clumping some together.</p></li>
+</ul>
+</section>
+<section id="p-values" class="level4">
+<h4 class="anchored" data-anchor-id="p-values">P-Values</h4>
+<ul>
+<li><p>Our optimization uses a simple linear regression on training results in order to find the most optimal (statistically significant) parameters.</p></li>
+<li><p>However there is some bias when comparing regression result with different degrees of freedom.</p></li>
+<li><p>Holding all else constant, as the number of observations increases, p-value decreases.</p></li>
+</ul>
+</section>
+</section>
+<section id="data-sources-1" class="level2">
+<h2 class="anchored" data-anchor-id="data-sources-1">Data Sources</h2>
+<ul>
+<li><p>Yahoo Finance</p></li>
+<li><p>COMEX *</p></li>
+<li><p>New York Mercantile Exchange (NYMEX) *</p></li>
+<li><p>Chicago Mercantile Exchange (CME) *</p></li>
+<li><p>Chicago Board of Trade (CBOT) *</p></li>
+<li><p>Minneapolis Grain Exchange (MGEX) *</p></li>
+<li><p>Intercontinental Exchange (ICE) Canada *</p></li>
+<li><p>Bank of Canada</p></li>
+</ul>
+<p>* Via MorningStar</p>
+</section>
+<section id="resources" class="level2">
+<h2 class="anchored" data-anchor-id="resources">Resources</h2>
+<p>Jeannret, A. &amp; Sokolovski, V. 2023. <em>Commodity Prices and Currenies</em></p>
+</section>
+<section id="future-considerations" class="level2">
+<h2 class="anchored" data-anchor-id="future-considerations">Future Considerations</h2>
+<section id="implmenting-volatility-trading" class="level3">
+<h3 class="anchored" data-anchor-id="implmenting-volatility-trading">Implmenting Volatility Trading</h3>
+<section id="garch-model-on-commodity-index-daily-returns" class="level4">
+<h4 class="anchored" data-anchor-id="garch-model-on-commodity-index-daily-returns">Garch model on Commodity Index daily returns</h4>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="CAD_USD_Forcasting_files/figure-html/unnamed-chunk-37-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+
+
+</section>
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

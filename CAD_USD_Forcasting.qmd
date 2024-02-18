@@ -1,0 +1,1333 @@
+---
+title: "Impact of Commodity Prices on CAD/USD"
+author: "Brooklyn Holt & Olivier Haley"
+format: html
+editor: source
+output:
+  html_document:
+    mathjax: TRUE
+---
+
+# Overview
+
+This project aims to discover whether commodity prices can be used in the short term to predict changes in the Canadian Dollar. We analyze the correlation between an index of export commodities and the Canadian Dollar to create an optimal trading strategy.
+
+This project implements linear models to find a relationship between commodity price movements and its impact on the future CAD/USD exchange rate.
+
+Our model displays its predictive ability both in the training period and holdout data. Our strategy yields a 3.26% cumulative return in out-of-sample holdout data from August 20, 2021 to present, outperforming a buy and hold strategy by 11.5%. Our strategy finds success in minimizing drawdown periods thereby offering an attractive strategy to manage foreign exchange risk.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, tidy = FALSE, strip.white = TRUE, cache = F)
+```
+
+```{r}
+#libraries
+library(tidyverse)
+library(tidyquant)
+library(dplyr)
+library(plotly)
+library(ggplot2)
+library(stringr)
+library(RTL)
+library(fintool)
+library(PerformanceAnalytics)
+library(PortfolioAnalytics)
+library(timetk)
+library(knitr)
+library(stats)
+library(factoextra)
+library(zoo)
+library(foreach)
+library(doParallel)
+library(corrplot)
+library(corrr)
+library(FRAPO)
+library(prophet)
+library(sjPlot)
+library(sjmisc)
+library(sjlabelled)
+
+user = "trading@ualberta.ca"
+pass = "#5GvhnRCvk"
+```
+
+```{r}
+#Import Currencies and Clean Data
+
+#import data
+#tickers
+tick = c("CAD=X")
+
+#import from yahoo finance
+fx.long <-
+  tidyquant::tq_get(tick, 
+                    get = "stock.prices", 
+                    from = "1980-01-01") %>% 
+  dplyr::mutate(date = as.Date(date),
+                symbol = stringr::str_replace_all(symbol,
+                                                  pattern = "=X",
+                                                  replacement = "")) %>% 
+  stats::na.omit() %>% 
+  mutate(inverse = 1/adjusted)
+
+#keep adjusted values
+#convert to long data frame
+fx.wide <- 
+  fx.long %>% 
+  tidyr::pivot_wider(date, 
+                     names_from = symbol,
+                     values_from = inverse) %>% 
+  tidyr::drop_na()
+
+CAD_ONLY <- fx.long %>% 
+  dplyr::filter(symbol == "CAD") %>% 
+  transmute(symbol, date, Close = 1/adjusted, Open = 1/open)
+```
+
+```{r}
+
+fred <- tidyquant::tq_get("PPIIDC",
+                          get = "economic.data",
+                          from = "2000-01-01") %>%
+  pivot_wider(date, names_from = symbol, values_from = price) %>%
+  mutate(date = as.Date(date))
+
+bcpi <- read_csv("https://www.bankofcanada.ca/valet/observations/group/BCPI_MONTHLY/csv?start_date=1972-01-01",
+     col_types = cols(date = col_date(format = "%Y-%m-%d")),
+     skip = 20) %>%
+  dplyr::filter(date >= as.Date("2000-01-01"))
+
+#Gold, Silver, copper
+COMEX <- RTL::getPrices(feed = "CME_Comex_FuturesSettlement_EOD_continuous",
+               contracts = c("GC_001_Month", "SI_001_Month", "HG_001_Month"),
+               from = "2000-01-01",
+               iuser = user,
+               ipassword = pass) %>% 
+  dplyr::rename(GC = GC_001_Month,
+                SI = SI_001_Month,
+                HG = HG_001_Month)
+
+
+#IMPORT NYMEX DATA #WTI, natural gas, Brent, Western Canadian Select
+NYMEX <- RTL::getPrices(feed = "CME_NymexFutures_EOD_continuous", 
+                contracts = c("CL_001_Month","NG_001_Month", "BZ_001_Month", "WCE_001_Month"),
+                from = "2000-01-01",
+                iuser = user, 
+                ipassword = pass) %>% 
+  dplyr::rename(CL = CL_001_Month,
+                NG = NG_001_Month,
+                BZ = BZ_001_Month,
+                WCE = WCE_001_Month) 
+
+# Corn
+CBOT <- RTL::getPrice(feed = "CME_CbotFuturesEOD_continuous",
+                      contract = c("ZC_001_Month"),
+                      from = "2000-01-01",
+                      iuser = user, 
+                      ipassword = pass) %>% 
+  dplyr::rename(ZC = ZC_001_Month)
+
+# Hard red spring wheat
+MGEX <- fintool::getAgPrice(feed = "MGEX_Futures_continuous",
+                            contract = c("MWE_001_Month"),
+                            from = "2000-01-01",
+                            iuser = user,
+                            ipassword = pass) %>%
+  dplyr::rename(MWE = MWE_001_Month)
+
+# Live Cattle, Hogs
+ticks <- c("LE=F", "HE=F")
+Yahoo <- tidyquant::tq_get(ticks, 
+                           get = "stock.prices", 
+                           from = "2000-01-01") %>% 
+  dplyr::mutate(date = as.Date(date),
+                symbol = stringr::str_replace_all(symbol,
+                                                  pattern = "=F",
+                                                  replacement = "")) %>% 
+  stats::na.omit() %>% 
+    tidyr::pivot_wider(date, 
+                      names_from = symbol,
+                      values_from = adjusted)
+```
+
+```{r}
+#merge data
+CBOTCMEICEMGEX <- merge(CBOT, MGEX, all = T)
+plusmetal <- merge(CBOTCMEICEMGEX, COMEX, all = T)
+allyahoo <- merge(plusmetal, Yahoo, all = T)
+com <- as.tibble(merge(allyahoo, NYMEX, all = T)) %>% 
+  dplyr::mutate(date = as.Date(date)) 
+  
+CAD <- fx.wide %>% 
+  dplyr::select(date, CAD) %>% 
+  tidyr::drop_na()
+CADcom <- as.tibble(merge(CAD, com, all = F)) %>% 
+  dplyr::mutate(date = as.Date(date))
+```
+
+```{r }
+#create CAD df
+#full at March 1
+CAD <- fx.wide %>% 
+  dplyr::select(date, CAD) %>% 
+  tidyr::drop_na()
+
+CADcom <- as.tibble(merge(CAD, com, all = F)) %>% 
+  dplyr::mutate(date = as.Date(date)) %>% 
+  dplyr::filter(date >= "2014-03-01")
+
+
+# include lumber, remove WCE as there are no values for this period
+CADCOM.DATE <- CADcom %>% 
+  dplyr::select(-WCE) %>% 
+  tidyr::drop_na() %>% 
+  tidyr::pivot_longer(-date, names_to = "series", values_to = "value") %>% 
+  tidyr::drop_na() %>% 
+  dplyr::group_by(series) %>% 
+  dplyr::mutate(value = log(value) - log(dplyr::lag(value))) %>% 
+  tidyr::drop_na() %>% 
+  tidyr::pivot_wider(id_cols = date, names_from = series, values_from = value) %>% 
+  tidyr::drop_na()
+```
+
+## Research & Rationale
+
+### Commodity Currency
+
+-   Currencies of nations that are heavily influenced by certain commodity prices.
+
+-   Net exporters of commodities.
+
+    -   Examples: Brazilian real, Canadian dollar, Mexican Peso, New Zealand dollar, Norwegian krone, Peruvian sol, Russian ruble, and the South African rand.
+
+-   Although this specific project is based on the CAD/USD currency rate, the same principle could apply to other commodity currencies.
+
+### CAD/USD Exchange Rate
+
+-   Factors determining CAD/USD exchange rate ([Source](https://www.investopedia.com/trading/factors-influence-exchange-rates/ "Factors Influencing Foreign Exchange"))
+    -   Supply/Demand
+
+    -   Inflation
+
+    -   Interest rates
+
+    -   Economic Performance
+
+    -   Public debt
+
+    -   Current Account Deficits
+-   Closely intertwined economies across all markets provide multiple strategies when trading.
+
+<!-- -->
+
+-   Trading CAD/USD
+
+    -   US is the largest producer of Oil in the world
+
+    -   However, it is still a net importer of petroleum products.
+
+    -   Most of it from Canada (\~40%) Domestic crude production in the US is increasing, and reliance on imports is reducing quickly.
+
+    -   The rapid increase of crude oil exports from the United States should be considered, as it increases throughout our training period.
+
+    -   **Bottom line:** Canada is still much more concentrated in the petroleum sector.
+
+```{r}
+cad.corr <- CADCOM.DATE %>%
+      dplyr::select(date, CL, CAD) %>%
+      stats::na.omit()
+roll_corr <- cad.corr %>%
+  dplyr::mutate(cor5 = slider::pslide_dbl(
+    .l = list(CAD, CL),
+    .f = ~ cor(.x, .y),
+    .before = 5,
+    .after = 0,
+    .complete = TRUE)) %>% 
+  
+    dplyr::mutate(cor30 = slider::pslide_dbl(
+    .l = list(CAD, CL),
+    .f = ~ cor(.x, .y),
+    .before = 30,
+    .after = 0,
+    .complete = TRUE)) %>% 
+  
+    dplyr::mutate(cor200 = slider::pslide_dbl(
+    .l = list(CAD, CL),
+    .f = ~ cor(.x, .y),
+    .before = 200,
+    .after = 0,
+    .complete = TRUE)) %>% 
+  
+  tidyr::drop_na()
+roll_corr %>% 
+  ggplot(aes(x = date)) + 
+  geom_line(aes(y = cor5, col = "5-day")) +
+  geom_line(aes(y = cor30, col = "30-day")) +
+  geom_line(aes(y = cor200, col = "200-day")) +
+  scale_color_manual(name = "Correlation Window",
+                     values = c("5-day" = "honeydew3", "30-day" = "#ae0581", "200-day" = "#1d5b79"), 
+                     breaks = c("5-day", "30-day", "200-day"),
+                     labels = c("5-day", "30-day", "200-day")) +
+  labs(title = "CAD/USD and Crude Rolling Correleation", x = "Date", y = "Correlation")+
+  theme_minimal()
+```
+
+### Influence
+
+#### Bank of Canada Commodity Index
+
+The Bank of Canada Commodity Index (BCPI) is a Fisher Price index of the spot prices in the U.S. dollars of 26 commodities produced in Canada and sold in world markets. ([Bank of Canada](https://www.bankofcanada.ca/rates/price-indexes/bcpi/ "Bank of Canada Commodity Price Index"))
+
+The currency and Bank of Canada Commodity index consists of data from October 2003.
+
+Commodities that make up the index:
+
+| Energy                           | Metals and Minerals | Agriculture    | Forestry  | Fisheries |
+|---------------|---------------|---------------|---------------|---------------|
+| Coal                             | Gold \*             | Potatoes       | Pulp      | Finfish   |
+| West Texas Intermediate (WTI) \* | Silver \*           | Live Cattle \* | Lumber    | Shellfish |
+| Western Canadian Select          | Nickel              | Live Hogs \*   | Newsprint |           |
+| Brent \*\*                       | Copper \*           | Wheat \*       |           |           |
+| Natural Gas                      | Aluminium           | Barley         |           |           |
+|                                  | Zinc                | Canola         |           |           |
+|                                  | Potash              | Canola         |           |           |
+|                                  | Lead                | Corn \*        |           |           |
+|                                  | Iron                |                |           |           |
+
+Note:
+
+-   \* Commodities included in our index. Index chosen based on data availability.
+-   \*\* Omitted due to similarity with another commodity
+
+#### CAD/USD and BCPI Movement
+
+-   The commodity index moves similarly to the CAD/USD exchange rate
+
+-   The commodities within the index have a direct correlation to the Canadian economy
+
+    -   Job creation and stimulation
+
+    -   Tax revenue from corporations tariffs
+
+    -   Higher government royalties leads to less municipal, provincial, and federal debt
+
+        -   Alberta recently recorded an \$11.6B surplus largely due to high crude prices.
+
+```{r}
+cadbcpi <- left_join(fred, bcpi, by = "date") %>%
+  group_by(date) %>%
+  dplyr::transmute(date = date,
+                  M.BCPI = M.BCPI/PPIIDC,
+                  M.BCNE = M.BCNE/PPIIDC,
+                  M.ENER = M.ENER/PPIIDC,
+                  M.MTLS = M.MTLS/PPIIDC,
+                  M.FOPR = M.FOPR/PPIIDC,
+                  M.AGRI = M.AGRI/PPIIDC,
+                  M.FISH = M.FISH/PPIIDC) %>%
+  tidyr::drop_na()
+
+r <- range(fx.wide$CAD)
+
+br <- range(cadbcpi$M.BCPI)
+
+cadbcpi$BCPI <- scales::rescale(cadbcpi$M.BCPI, to = r)
+cadbcpi$ENER <- scales::rescale(cadbcpi$M.ENER, to = r)
+
+cadbcpi <- merge(cadbcpi, fx.wide, all = T) %>%
+  select(date, CAD, BCPI, ENER) %>%
+  tidyr::drop_na()
+
+p <- ggplot(cadbcpi, aes(x = date)) +
+   geom_line(aes(y = CAD, color = "CAD")) +
+   geom_line(aes(y = BCPI, color = "BCPI")) +
+  scale_color_manual(values = c(CAD = "#ae0581", BCPI = "#1d5b79" ))+
+  labs(title = "CAD/USD and BCPI Commodity Index", x = "", y = "CAD/USD")+
+  theme_minimal()
+
+p %>% ggplotly
+```
+
+## Description and Type of Strategy
+
+-   Our strategy looks at the short term performance of our commodity index
+
+-   If Commodity Index returns are positive in last n days, a long position is assumed
+
+-   Position is held for m days and reassessed thereafter
+
+### When does it work?
+
+-   When the currency is highly correlated to commodity price movements
+
+-   When the economy is heavily reliant on commodity exports
+
+-   Our model protects traders from long drawdowns
+
+### When it may not work?
+
+-   During rapid market movements
+
+-   As trading frequency increases, returns decrease
+
+-   Rapid changes to commodity export proportion (index weights are fixed in this analysis)
+
+-   Factors not taken into consideration.
+
+    -   Wars, financial crisis, inflation, natural disasters
+
+    -   Non-commodity to the economy
+
+    -   Foreign policy changes (tariffs, taxes, trade conflicts)
+
+    -   Transactions costs, Short selling costs
+
+# Model Implementation
+
+## Data Sources
+
+-   Yahoo Finance
+
+-   COMEX \*
+
+-   New York Mercantile Exchange (NYMEX) \*
+
+-   Chicago Mercantile Exchange (CME) \*
+
+-   Chicago Board of Trade (CBOT) \*
+
+-   Minneapolis Grain Exchange (MGEX) \*
+
+-   Intercontinental Exchange (ICE) Canada \*
+
+-   Bank of Canada
+
+\* Via MorningStar
+
+### Index Weighting
+
+-   Weighting was assigned to match the 2013 export percentage. ([2013 Export Percentages](https://oec.world/en/profile/country/can?yearSelector1=2021 "OEC Export Data"))
+
+    -   I.e. 17.7% of Canadian exports in 2013 were WTI, compared to the exports of other commodities in our index, WTI is weighted at 66.8%
+
+| Commodity                    | Weight |
+|------------------------------|--------|
+| West Texas Intermediate (CL) | 66.80% |
+| Gold (GC)                    | 13.70% |
+| Natural Gas (NG)             | 8.72%  |
+| Wheat (MWE)                  | 6.00%  |
+| Silver (SI)                  | 1.85%  |
+| Live Cattle (LE)             | 1.09%  |
+| Copper (HG)                  | 1.06%  |
+| Corn (ZC)                    | 0.49%  |
+| Live Hogs (HE)               | 0.29%  |
+
+```{r }
+CADCOM.DATE_xts <- CADCOM.DATE %>% timetk::tk_xts(date_var = date)
+```
+
+```{r }
+fx.long_cleaned <- fx.long %>% 
+  dplyr::group_by(symbol) %>% 
+  dplyr::mutate(value = log(inverse) - log(dplyr::lag(inverse))) %>% 
+  dplyr::mutate(date = as.Date(date)) %>% 
+  select(date, symbol, value, inverse) %>% 
+  na.omit()
+
+z_scores <- scale(fx.long_cleaned$value)
+threshold <- 6
+outliers <- apply(abs(z_scores) > threshold, 1, any)
+
+fx.long_no_outliers <- fx.long_cleaned[!outliers, ]
+
+# Plotting without outliers
+# p1 <- fx.long_no_outliers %>% 
+#   ggplot(aes(x = date, y = inverse, col = symbol)) +
+#   geom_line() +
+#   labs(title = "National Currency Price Compared to 1 USD",
+#        caption = "Source: Yahoo Finance",
+#        x = "Date",
+#        y = "Adjusted Price")
+
+# Convert ggplot to plotly
+#p1_plotly <- ggplotly(p1)
+
+# Display the plot
+#p1_plotly
+```
+
+```{r}
+wide_fx <-fx.long_no_outliers %>%
+  pivot_wider(id_cols =-inverse, names_from = symbol, values_from = value) %>% 
+  na.omit()
+
+```
+
+#### Correlation Matrix of Commodity Index and CAD
+
+* Note lowercase cad represents week ahead returns for CAD/USD
+
+```{r}
+# TIME AHEAD Prediction
+# WEEKLY
+# lag cad returns by one week
+
+weekly_ret_long <- CADCOM.DATE %>% 
+  pivot_longer(cols = -date, names_to = "symbol", values_to = "value") 
+
+TimeAhead <- 5
+TimeBehind <- 5
+
+weekly_ret <- weekly_ret_long %>% 
+  group_by(symbol) %>% 
+  mutate(last_x = zoo::rollsum(value, 5, align = "right", fill = NA))
+
+weekly_lag <- weekly_ret %>% 
+  pivot_wider(id_cols = -value, names_from = symbol, values_from = last_x) %>%
+  mutate(cad = lead(CAD, 5)) %>% 
+  na.omit()
+
+weekly_lag1 <- weekly_lag %>% 
+  slice(seq(1, n(), by = 5)) 
+  
+
+weekly_lag_matrix <- weekly_lag %>% 
+  select(-date) %>% 
+  stats::cor(., method = "kendall") %>% 
+  as.matrix()
+
+palette <- colorRampPalette(c("#ae0581", "white", "#1d5b79"))(n = 100)
+
+corrplot::corrplot(
+    corr = weekly_lag_matrix,
+    method = "color",
+    order = "original",
+    type = "upper",
+    addCoef.col = 'black',
+    tl.col = "#ae0581",
+    col = palette)
+```
+
+```{r}
+
+crude <- 17.7
+MWE <- 1.59
+ZC <- 0.13
+gc <- 3.63
+sil <- 0.49
+cop <- 0.28
+ng <- 2.31
+he <- 0.077
+le <- 0.29
+
+tot <- sum(crude, MWE, ZC, gc, sil, cop, ng, he, le)
+
+wCL <- (crude/tot)*100
+wMWE <- (MWE/tot)*100
+wZC <- (ZC/tot)*100
+wGC <- (gc/tot)*100
+wSI <- (sil/tot)*100
+wHG <- (cop/tot)*100
+wNG <- (ng/tot)*100
+wHE <- (he/tot)*100
+wLE <- (le/tot)*100
+
+```
+
+```{r}
+#create index
+
+#weights taken from 2013 export data on OEC world
+
+weightday <- c(wZC, wMWE, wGC, wSI, wHG, wLE, wHE, wCL, wNG)
+w1 <- 5
+
+CADCOM.DATE <- CADCOM.DATE %>% 
+  dplyr::filter(date <= "2024-02-06")
+
+CADindex <- CADCOM.DATE %>% 
+  select(-c(CAD, BZ)) %>% 
+  tidyr::pivot_longer(cols = -date, names_to = "series", values_to = "values") %>% 
+  dplyr::group_by(date) %>% 
+  dplyr::mutate(index = as.numeric(weighted.mean(values, weightday))) %>% 
+  dplyr::select(date, index) %>% 
+  unique(by = date) %>% 
+  ungroup() %>% 
+  dplyr::mutate(CAD = CADCOM.DATE$CAD)
+
+```
+
+## Indicators
+
+-   Commodity Index return over the last [*n*]{.underline} days
+
+    -   *index_return = sum(ret_index_i + ret_index\_(i-1) ... +ret_index\_(i-n))*
+
+-   Held and reassessed every [*m*]{.underline} days
+
+    -   *cad_return = sum(ret_cad\_(i+1) + ret_cad\_(i+2) ... +ret_cad\_(i+m))*
+
+## Signals & Trades
+
+### Signals
+
+-   If last n trading days of Commodity Index yield positive results, long
+
+-   If last n trading days of Commodity Index yield negative results, short
+
+-   No signals generated on weekends or during holding period
+
+### Trades
+
+-   Signals are made at end of day and incorporate end of day data.
+
+-   Trades are effective at market open the following trading day
+
+-   Once a trade has been put in, it will not change for the holding period.
+
+    -   That is, no signals will be generated during the holding period
+
+    -   Trades will be reassessed after the holding period is over
+
+```{r}
+# test different lags
+# test different commodities
+# Create an empty data frame to store results
+results_table <- data.frame(i = numeric(), j = numeric(), r_squared = numeric(), p_value = numeric(), estimate = numeric(), std_error = numeric(), degf = numeric())
+
+# Loop through i and j values
+for (i in 1:10) {
+  for (j in 2:30) {
+
+    CADindex_lag <- CADindex %>%
+      mutate(last_COM = zoo::rollsum(index, i, align = "right", fill = NA)) %>% 
+      mutate(lead_CAD = zoo::rollsum(CAD, j, align = "left", fill = NA)) 
+
+    CADindex_lag1 <- CADindex_lag %>% 
+      slice(seq(1, n(), by = j)) %>% 
+      na.omit()
+    model <- lm('lead_CAD ~ last_COM', data = CADindex_lag1)
+    # Extract R-squared value
+    r_squared_value <- summary(model)$r.squared
+    # Add p-values to the results table
+    p_value <- summary(model)$coefficients[2, 4]
+    # Add estimate to the results table 
+    estimate <- summary(model)$coefficients[2, 1]
+    # Add standard error to the results table
+    std_error <- summary(model)$coefficients[2, 2]
+    # add df
+    degf <- summary(model)$df[2]
+    results_table <- rbind(results_table, data.frame(i = i, j = j, r_squared = r_squared_value, p_value = p_value, estimate = estimate, std_error = std_error, degf = degf))
+  }
+}
+
+
+
+
+results_input <-  results_table %>% 
+  arrange(desc(r_squared)) %>% 
+  slice(1)
+Backwards <- results_input$i
+Forward <- results_input$j
+```
+
+-   Below is an output of the top 5 highest R\^2 values. It is noticeable that the 5 highest R\^2 values all have holding periods of 17 trading days or greater.
+
+```{r}
+# show table in clean format with gt
+results_table2 <- results_table %>% 
+  transmute(Back = i, Hold = j, r_squared, p_value, estimate, std_error, df = degf) %>%
+  arrange(desc(r_squared)) %>%
+  slice(1:5) %>% 
+  kable(digits = 4)
+results_table2  
+```
+
+#### Real P-value
+
+-   The p-value is the probability of observing a test statistic as extreme or greater than the one computed, assuming that the null hypothesis is true.
+
+-   We can clearly see a relationship between p-values and the number of observations (degrees of freedom).
+
+-   Real P-value is the p-value adjusted for the number of observations (degrees of freedom)
+
+```{r}
+#plot p-values and degf for different lags
+results_table %>%
+  ggplot(aes(x = j)) +
+  geom_point(aes(y = p_value), color = "#ae0581") +
+  geom_point(aes(y = degf / 1000), color = "#1d5b79") +  # Scaling degf for better visualization
+  geom_line(aes(y = degf / 1000), color = "#1d5b79") +  # Scaling degf for better visualization
+  scale_y_continuous(name = "P-value", sec.axis = sec_axis(~.*1000, name = "DF")) +
+  labs(title = "P-values and Degrees of Freedom by Holding Period", x = "Holding Period") +
+  theme_minimal()
+```
+
+```{r}
+# Split the data into training and test sets
+first_percent <- function(x, percent) {
+  head(x, ceiling(nrow(x)*percent/100))
+}
+
+last_percent <- function(x, percent) {
+  tail(x, ceiling(nrow(x)*percent/100))
+}
+
+training_set <- CADindex %>% first_percent(75)
+test_set <- CADindex %>% last_percent(25)
+
+```
+
+```{r}
+out <- expand.grid(
+  front = seq(from = 2, to = 30, by = 1),
+  back = seq(from = 1, to = 10, by = 1)
+)
+
+
+## Strategy
+strategy <- function(f_data = f_data,
+                     curr_data = curr_data,
+                     forward = out[1, "front"],
+                     backwards = out[1, "back"],
+                     country = `CAD`){
+  CADindex_lag <- f_data %>%
+      mutate(last_COM = zoo::rollsum(index, backwards, align = "right", fill = NA))
+ 
+   date_range <- range(f_data$date)
+  
+  curr_data <- curr_data %>%
+    dplyr::filter(date >= date_range[1] & date <= date_range[2])
+
+  CADindex_lag1 <- CADindex_lag %>% 
+    slice(seq(1, n(), by = forward)) %>% 
+    na.omit()
+  
+f_data = left_join(curr_data, CADindex_lag1, by = "date") %>% 
+  fill(last_COM, .direction = "down") %>%
+  select(date, Close, Open, last_COM) %>%
+  na.omit()
+f_data = f_data %>% 
+  dplyr::mutate(
+    # Close on Close over two days
+    retClOp = Open / dplyr::lag(Close) - 1,
+    # Close vs Open on same day
+    retOpCl = (Close - Open) / Close, 
+    # Open vs prior day Close
+    retClCl =  Close / dplyr::lag(Close) - 1,
+    # INDICATORS
+    
+    # Signals
+    signal = dplyr::case_when( last_COM > 0 ~ 1,
+                              last_COM < 0 ~ -1,
+                              TRUE ~ 0),
+    # Trade
+    trade = tidyr::replace_na(dplyr::lag(signal, default = 0) - dplyr::lag(signal, n = 2L, default = 0), 0),
+    # Positions
+    pos = cumsum(trade),
+    # PL
+    ret_new = ifelse(pos == trade , pos * retOpCl, 0),
+    ret_exist = ifelse(pos != 0 & trade == 0, pos * retClCl, 0),
+    ret_others = dplyr::case_when((pos - trade) != 0 &
+                                    trade != 0 ~ (1 + retClOp * (pos - trade)) * (1 + retOpCl * pos) - 1,
+                                  TRUE ~ 0
+    ),
+    ret = ret_new + ret_exist + ret_others,
+    # Compute Cumulative Equity or PL
+    cumeq = cumprod(1 + ret)
+  
+  )
+  return(f_data)
+}
+
+train_res <- strategy(f_data = training_set, curr_data = CAD_ONLY, forward = Forward, backwards = Backwards, country = "CAD")
+test_results <- strategy(f_data = test_set,curr_data = CAD_ONLY, forward = Forward, backwards = Backwards, country = "CAD")
+```
+
+## Training Period
+
+-   75% of the data was used to create the training set
+
+    -   April 17, 2014 - August 19, 2021
+
+-   Inputs
+
+    -   n (Back) = 1:10
+
+    -   m (Hold) = 2:30
+
+### Optimization
+
+Our model optimizes:
+
+-   The look back period
+
+    -   We receive optimal cumulative returns if we look at the returns 2 previous trading days for our commodity index.
+
+-   Optimal time to hold
+
+    -   The optimal time to hold the position is 30 days.
+
+    -   This allows time for any major market movements to settle without causing multiple trades in and out of the market.
+
+The model considers the following values when optimizing:
+
+-   R Squared
+
+-   P-Value
+
+-   Estimate
+
+##### Buy and Hold Strategy
+
+```{r}
+library(scales)
+# Buy and Hold Return
+buy_and_hold_return <- (tail(train_res$Close, 1) / head(train_res$Close, 1)) - 1
+
+# Express as a percentage
+buy_and_hold_return_percent <- percent(buy_and_hold_return, accuracy = 0.01)
+
+# Print the result
+cat("Buy and hold return:", buy_and_hold_return_percent, "\n")
+```
+
+#### Training Results
+
+```{r}
+# Strategy Risk Reward
+train_risk <- data.frame(RTL::tradeStats(train_res %>% dplyr::select(date,ret)))
+
+kable(train_risk, 
+      digits = 4,
+      caption = "Training Strategy Statistics")
+```
+
+```{r}
+# Training Period
+drawdowns_train <- train_res %>% dplyr::transmute(date, Strategy = ret, Holding = retClCl) %>% PerformanceAnalytics::chart.Drawdown(main = "Training Drawdowns (Holding vs Strategy)", col = c("#ae0581","#1d5b79"), legend.loc = "bottom")
+drawdowns_train
+```
+
+```{r, fig.keep = "last"}
+tmp <- train_res %>% timetk::tk_xts(date_var = date)
+plot(tmp$Close, main = "Training Set Strategy Results")
+xts::addSeries(
+  tmp$trade,
+  main = "Trades",
+  on = NA,
+  type = "h",
+  col = "#1d5b79",
+  lty = 1,
+  lwd = 1,
+  pch = 0
+)
+xts::addSeries(
+  tmp$pos,
+  main = "Positions",
+  on = NA,
+  type = "h",
+  col = "#1d5b79",
+  lty = 1,
+  lwd = 1,
+  pch = 0
+)
+xts::addSeries(
+  tmp$cumeq,
+  main = "CumEQ",
+  on = NA,
+  type = "l",
+  col = "#ae0581",
+  lty = 1,
+  lwd = 1,
+  pch = 0
+)
+```
+
+### Risk Appetite
+
+-   Very risk-averse
+
+-   Autocorrelation Risk: Choosing optimal inputs from R\^2 and not Cumulative Returns
+
+-   We seek to lower drawdowns and manage foreign exchange risk rather than increase profits
+
+-   Strategy is designed to hedge risk.
+
+```{r}
+# Optimize lookback
+
+numcors <- parallel::detectCores() - 1
+cluster <- parallel::makeCluster(numcors)
+doParallel::registerDoParallel(cluster)
+
+opt <- foreach::foreach(
+  i = 1:nrow(out),
+  .combine = "cbind",
+  .packages = c(
+    "tidyverse",
+    "timetk",
+    "TTR",
+    "RTL",
+    "PerformanceAnalytics"
+  ) 
+) %dopar% {
+  as.numeric(RTL::tradeStats(
+    strategy(f_data = training_set,
+             curr_data = CAD_ONLY,
+             forward = out[i, "front"],
+             backwards = out[i, "back"],
+             country = "CAD") %>% 
+      dplyr::select(date, ret)
+  ))
+}
+
+parallel::stopCluster(cluster)
+
+opt <- tibble::as.tibble(t(opt))
+colnames(opt) <- names(RTL::tradeStats(x = train_res %>% dplyr::select(date, ret)))
+train_results <- cbind(out, opt)
+
+train_results <- train_results %>% arrange(desc(train_results$CumReturn))
+
+#head(train_results)
+```
+
+```{r}
+# stratReturn <- train_res %>%
+#   dplyr::transmute(asset = retClCl, strategy = ret) %>% 
+#   tidyr::drop_na()
+# PerformanceAnalytics::chart.Correlation(stratReturn, histogram = TRUE)
+# 
+# 
+# drawdowns_cad <- train_res %>% dplyr::select(date, retClCl) %>% PerformanceAnalytics::chart.Drawdown(main = "Training Drawdowns", col = "#ae0581")
+# 
+# drawdowns <- train_res %>% dplyr::select(date, ret) %>% PerformanceAnalytics::chart.Drawdown(main = "Training Drawdowns", col = "#ae0581")
+# 
+# drawdowns_test <- test_results %>% dplyr::select(date, ret) %>% PerformanceAnalytics::chart.Drawdown(main = "Test Drawdowns", col = "#ae0581")
+# 
+# drawdowns
+# drawdowns_cad
+```
+
+```{r}
+outZ <- train_results %>%
+  tidyr::pivot_longer(
+    cols = -c(front, back),
+    names_to = "variable",
+    values_to = "value"
+  ) %>%
+  dplyr::group_by(variable) %>%
+  dplyr::mutate(valueZ = (value - mean(value)) / sd(value))
+
+outZ %>%
+  ggplot(aes(x = front, y = back)) +
+  geom_raster(aes(fill = valueZ), interpolate = TRUE) +
+  facet_wrap( ~ variable, scales = "free") +
+  scale_fill_gradient2(
+    low = "#ae0581",
+    mid = "white",
+    high = "#1d5b79",
+    midpoint = 0
+  ) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    panel.background = element_rect(fill = "white")
+  ) +
+  labs(title = "Optimization Results Grid",
+       subtitle = "Z-score for Comparability")
+```
+
+Note: Back is the look-back period, and front is the time held.
+
+## Test Period Performance
+
+-   Test results were done from August 20, 2021, to Present
+
+##### Optimal Parameters:
+
+-   Look back: 2 trading days
+
+-   Holding period: 30 trading days
+
+-   Results from the backtest proved our strategy profitable in the out-of-sample holdout dataset.
+
+-   Although average annual returns are lower than in the training set, the strategy still outperforms the buy and hold return.
+
+```{r}
+library(scales)
+# Buy and Hold Return
+buy_and_hold_return <- (tail(test_results$Close, 1) / head(test_results$Close, 1)) - 1
+
+# Express as a percentage
+buy_and_hold_return_percent <- percent(buy_and_hold_return, accuracy = 0.01)
+
+# Print the result
+cat("Buy and hold return:", buy_and_hold_return_percent, "\n")
+```
+
+```{r}
+# Test Period
+drawdowns_test <- test_results %>% dplyr::transmute(date, Strategy = ret, Holding = retClCl) %>% PerformanceAnalytics::chart.Drawdown(main = "Test Results Drawdowns (Holding vs Strategy)", col = c("#ae0581","#1d5b79"), legend.loc = "bottom")
+
+drawdowns_test
+```
+
+```{r, fig.keep = "last"}
+
+# TEST RESULTS
+
+tmp <- test_results %>% timetk::tk_xts(date_var = date)
+plot(tmp$Close, main = "Test Set Strategy Results")
+xts::addSeries(
+  tmp$trade,
+  main = "Trades",
+  on = NA,
+  type = "h",
+  col = "#1d5b79",
+  lty = 1,
+  lwd = 1,
+  pch = 0
+)
+xts::addSeries(
+  tmp$pos,
+  main = "Positions",
+  on = NA,
+  type = "h",
+  col = "#1d5b79",
+  lty = 1,
+  lwd = 1,
+  pch = 0
+)
+xts::addSeries(
+  tmp$cumeq,
+  main = "CumEQ",
+  on = NA,
+  type = "l",
+  col = "#ae0581",
+  lty = 1,
+  lwd = 1,
+  pch = 0
+)
+```
+
+#### Test Strategy Statistics
+
+```{r}
+# Strategy Risk Reward
+risk <- data.frame(RTL::tradeStats(test_results %>% dplyr::select(date,ret)))
+
+
+kable(risk, 
+      digits = 4,
+      caption = "Test Strategy Statistics")
+```
+
+# Learnings
+
+### Factors
+
+-   Currency markets are subject to many factors, including interest rates, inflation, and political stability.
+
+-   Expectations for profit should be limited
+
+### Modeling Strategies
+
+#### PCA (Principal Component Analysis)
+
+-   In linear regression. You must have more observations than predicting variables.
+
+-   PCA reduces the number of columns by clumping some together.
+
+#### P-Values
+
+-   Our optimization uses a simple linear regression on training results in order to find the most optimal (statistically significant) parameters.
+
+-   However there is some bias when comparing regression result with different degrees of freedom.
+
+-   Holding all else constant, as the number of observations increases, p-value decreases.
+
+## Data Sources
+
+-   Yahoo Finance
+
+-   COMEX \*
+
+-   New York Mercantile Exchange (NYMEX) \*
+
+-   Chicago Mercantile Exchange (CME) \*
+
+-   Chicago Board of Trade (CBOT) \*
+
+-   Minneapolis Grain Exchange (MGEX) \*
+
+-   Intercontinental Exchange (ICE) Canada \*
+
+-   Bank of Canada
+
+\* Via MorningStar
+
+## Resources
+
+Jeannret, A. & Sokolovski, V. 2023. *Commodity Prices and Currenies*
+
+```{r}
+# train_results %>% dplyr::select(front, back, CumReturn) %>%
+#   ggplot(aes(x = front, y = back)) +
+#   geom_raster(aes(fill = CumReturn), interpolate = TRUE) +
+#   scale_fill_gradient2(low = "red", mid = "white", high = "blue") +
+#   theme(
+#     panel.grid.major.x = element_line(colour = "grey"),
+#     panel.grid.minor.x = element_line(colour = "grey"),
+#     panel.grid.major.y = element_line(colour = "grey"),
+#     panel.grid.minor.y = element_line(colour = "grey"),
+#     panel.background = element_rect(fill = "white")
+#   ) +
+#   labs(title = "Optimization Results Grid",
+#        subtitle = "")
+```
+
+```{r}
+# #2022-08-08 - present, remove dates
+# CADCOM <- CADCOM.DATE %>% 
+#   dplyr::select(-date)
+```
+
+```{r}
+# exports_raw <- statcan_download_data("12-10-0098-01", "eng") 
+# exports_trimmed <- exports_raw %>% 
+#   transmute(REF_DATE, GEO, sector = `North American Industry Classification System (NAICS)` ,VALUE, SCALAR_FACTOR) %>%
+#   dplyr::filter(REF_DATE >= "2006-01-01") %>% 
+#   dplyr::filter(GEO == "Canada") %>%
+#   dplyr::filter(SCALAR_FACTOR ==  "thousands") %>%
+#   dplyr::mutate(REF_DATE = as.Date(REF_DATE)) %>% 
+#   dplyr::rename(date = REF_DATE,
+#                 exports = VALUE) %>% 
+#   dplyr::mutate(exports = as.numeric(exports))
+# 
+# exports_wide <- exports_trimmed%>% 
+#   tidyr::pivot_wider(names_from = sector, values_from = exports) %>% 
+#   tidyr::drop_na() %>% 
+#   dplyr::mutate(date = as.Date(date))
+# 
+# exports_proportion <- exports_trimmed %>% 
+#   group_by(date) %>% 
+#   mutate(exports_prop = exports/exports[sector == "All industries"]) %>% 
+#   ungroup()
+# exports_wide <- exports_proportion%>% 
+#   transmute(date, sector, exports_prop) %>%
+#   tidyr::pivot_wider(names_from = sector, values_from = exports_prop) %>% 
+#   tidyr::drop_na() %>% 
+#   dplyr::mutate(date = as.Date(date))
+
+```
+
+```{r}
+  
+# MATRICIES
+# cov_matrix <- wide_fx %>% 
+#   select(-date) %>% 
+#   cov() %>% 
+#   as.matrix()
+# 
+# heatmap(cov_matrix, 
+#         main = "Covariance Matrix Heatmap", 
+#         xlab = "Symbols", 
+#         ylab = "Symbols"
+# )
+
+# plot returns
+
+```
+
+```{r}
+# cov_matrix_full <- wide_fx_cur %>% 
+#   select(-date) %>% 
+#   cov() %>% 
+#   as.matrix()
+# heatmap(cov_matrix_full, 
+#         main = "Covariance Matrix Heatmap", 
+#         xlab = "Symbols", 
+#         ylab = "Symbols")
+# 
+# CURR_corr_matrix <- wide_fx %>% 
+#   select(-date) %>% 
+#   stats::cor(., method = "kendall") %>% 
+#   as.matrix()
+# corrplot::corrplot(
+#   corr = CURR_corr_matrix,
+#   method = "color",
+#   order = "AOE",
+#   type = "full",
+#   addCoef.col = 'black',
+#   col = COL2('PRGn'))
+# 
+# cad_corr_matrix <- CADCOM.DATE %>% 
+#   select(-date) %>% 
+#   stats::cor(., method = "kendall") %>% 
+#   as.matrix()
+# corrplot::corrplot(
+#   corr = cad_corr_matrix,
+#   method = "color",
+#   order = "AOE",
+#   type = "full",
+#   addCoef.col = 'black',
+#   col = COL2('PRGn'))
+# 
+# corr_matrix_full <- wide_fx_cur %>% 
+#   select(-date) %>% 
+#   stats::cor(., method = "kendall") %>% 
+#   as.matrix()
+# 
+# corrplot::corrplot(
+#    corr = corr_matrix_full,
+#    method = "color",
+#    order = "AOE",
+#    type = "full",
+#    addCoef.col = 'black',
+#    col = COL2('PRGn')
+#    )
+```
+
+```{r}
+## PCA Prep
+# 
+# pca <- CURR_corr_matrix %>% 
+#   prcomp(center = TRUE, scale. = TRUE)
+# 
+# eigen1 <- CURR_corr_matrix %>% eigen()
+#  
+# summ1 <- pca %>% summary()
+# 
+# pca %>% fviz_eig()
+# pca %>% fviz_pca_ind()
+# pca %>% fviz_pca_var()
+# rotation1 <- pca$rotation
+# 
+# ### 2
+# 
+# pca_cad <- cad_corr_matrix %>% 
+#   prcomp(center = TRUE, scale. = TRUE)
+# 
+# eigen2 <- cad_corr_matrix %>% eigen()
+# 
+# summ2 <- pca_cad %>% summary()
+# 
+# pca_cad %>% fviz_eig()
+# pca_cad %>% fviz_pca_ind()
+# pca_cad %>% fviz_pca_var()
+# rotation2 <- pca_cad$rotation
+# 
+# ### 3
+# 
+# pca_cadcom <- corr_matrix_full %>%
+#   prcomp(center = TRUE, scale. = TRUE) 
+# 
+# summ3 <- pca_cadcom %>% summary()
+# pca_cadcom %>% fviz_eig()
+# pca_cadcom %>% fviz_pca_var()
+# pca_cadcom %>% fviz_pca_ind(col.ind = "#00AFBB",
+#    repel = F)
+# pca_cadcom %>% fviz_pca_biplot(label = "var", addEllipses=TRUE, ellipse.level=0.95,
+#                ggtheme = theme_minimal())
+```
+
+```{r}
+# Joined df
+# wide_fx_cur <- wide_fx %>% 
+#   select(-CAD) %>%
+#   inner_join(CADCOM.DATE, by = "date", keep = F) %>% 
+#   na.omit()
+
+```
+
+## Future Considerations
+
+### Implmenting Volatility Trading
+
+#### Garch model on Commodity Index daily returns
+
+```{r}
+training_set %>% RTL::garch(out = "chart")
+```
+
+```{r}
+# out %>% dplyr::select(front, back, CumReturn) %>%
+#   ggplot(aes(x = front, y = back)) +
+#   geom_raster(aes(fill = CumReturn), interpolate = TRUE) +
+#   scale_fill_gradient2(low = "red", mid = "white", high = "blue") +
+#   theme(
+#     panel.grid.major.x = element_line(colour = "grey"),
+#     panel.grid.minor.x = element_line(colour = "grey"),
+#     panel.grid.major.y = element_line(colour = "grey"),
+#     panel.grid.minor.y = element_line(colour = "grey"),
+#     panel.background = element_rect(fill = "white")
+#   ) +
+#   labs(title = "Optimization Results Grid",
+#        subtitle = "")
+```
+```{r}
+# w1 <- out[1,2]
+# 
+# 
+# CADindex <- CADCOM.DATE %>% 
+#   select(-c(CAD,BZ)) %>% 
+#   tidyr::pivot_longer(cols = -date, names_to = "series", values_to = "values") %>% 
+#   dplyr::group_by(date) %>% 
+#   dplyr::mutate(index = as.numeric(weighted.mean(values, weightday))) %>% 
+#   dplyr::select(date, index) %>% 
+#   unique(by = date) %>% 
+#   ungroup() %>% 
+#   dplyr::mutate(CAD = CADCOM.DATE$CAD) 
+# 
+#   # dplyr::mutate(indexEMA = TTR::EMA(index, n = w1, wilder = FALSE, ratio = NULL)) %>% 
+#   # 
+# 
+# 
+# 
+# model <- lm('CAD ~ index', data = CADindex)
+# summary(model)
+# 
+# # Evaluate the model
+# predictions <- stats::predict(model, newdata = test_set)
+# actuals <- test_set$CAD
+# mse <- mean((predictions - actuals)^2)
+# rmse <- sqrt(mse)
+# rsq <- summary(model)$r.squared
+# 
+# plot_data <- data.frame(Date = test_set$date, Actual = actuals, Predicted = predictions)
+# 
+# p3 <- plot_ly(plot_data, x = ~Date) %>%
+#   add_lines(y = ~Actual, name = "Actual") %>%
+#   add_lines(y = ~Predicted, name = "Predicted")
+# 
+# p3
+
+```
+
+```{r}
+# Forecasting
+# data.p <- test_results %>% 
+#   dplyr::select(date, Close) %>% 
+#   dplyr::rename(ds = date,
+#                 y = Close) 
+# 
+# data.p <- prophet(data.pmathjax: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js")
+# 
+# future <- make_future_dataframe(data.p, 
+#                                 periods = 12, 
+#                                 freq = "week")
+# 
+# forecast <- predict(data.p, future)
+# 
+# plotp <- plot(data.p, 
+#               forecast, 
+#               xlabel = "Date",
+#               ylabel = "CAD Close")
+# 
+# ggplotly(plotp)
+# 
+# prophet::prophet_plot_components(data.p, forecast)
+```
