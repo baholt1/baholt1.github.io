@@ -47,8 +47,8 @@ library(sjPlot)
 library(sjmisc)
 library(sjlabelled)
 
-user = "trading@ualberta.ca"
-pass = "#5GvhnRCvk"
+user = MORNINGSTAR_USER
+pass = MORNINGSTAR_PASS
 ```
 
 ```{r}
